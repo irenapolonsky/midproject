@@ -67,7 +67,9 @@ resource "aws_security_group" "k8s-sg" {
     cidr_blocks     = ["0.0.0.0/0"]
     description     = "Allow all outside security group"
   }
+
 }
+
 ##################################################################################
 ##################################################################################
 resource "aws_security_group" "jenkins_sg" {
