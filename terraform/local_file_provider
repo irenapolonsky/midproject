@@ -1,0 +1,23 @@
+resource "local_file" "ansible_inventory" {
+    count = "${length(module.elasticsearch.ec2_name_output)}"
+    content = "[${module.elasticsearch.ec2_purpose}]\n${join("\n",
+            formatlist(
+              "%s ansible_host=%s",
+              module.elasticsearch.ec2_name_output,
+              module.elasticsearch.ec2_eip_output
+            )
+        )}\n\n[${module.elasticsearch.ecs_purpose_output}:vars]\nansible_user=MrAnderson\n\n\n[${module.logstash.ecs_purpose_output}]\n${join("\n",
+            formatlist(
+              "%s ansible_host=%s",
+              module.logstash.ec2_name_output,
+              module.logstash.ec2_eip_output
+            )
+        )}\n\n[${module.logstash.ecs_purpose_output}:vars]\nansible_user=MrAnderson\n\n\n[${module.kibana.ecs_purpose_output}]\n${join("\n",
+            formatlist(
+              "%s ansible_host=%s",
+              module.kibana.ec2_name_output,
+              module.kibana.ec2_eip_output
+            )
+        )}\n\n[${module.kibana.ecs_purpose_output}:vars]\nansible_user=MrAnderson"
+filename = "ansible/ansible_inventory"
+}
