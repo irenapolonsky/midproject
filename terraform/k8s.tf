@@ -31,7 +31,7 @@ resource "aws_instance" "k8s_master" {
  }
   provisioner "file" {
     source      = "jenkins_key_pair.pem"
-    destination = "jenkins_key_pair.pem"
+    destination = ".ssh/jenkins_key_pair.pem"
  }
 
   provisioner "remote-exec" {
@@ -50,7 +50,6 @@ apt-get install ansible -y
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
 cd /home/ubuntu/
-su ubuntu
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
 ansible-playbook -b -i hosts install-docker.yml
@@ -98,16 +97,20 @@ resource "aws_instance" "k8s_minion" {
 
  }
 
+  provisioner "file" {
+    source = "jenkins_key_pair.pem"
+    destination = ".ssh/jenkins_key_pair.pem"
 
-  provisioner "remote-exec" {
-    inline = [
-      "chmod 700 .ssh/id_rsa.pub",
-      "chmod 700 .ssh/id_rsa",
-      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
-          ]
   }
+    provisioner "remote-exec" {
+      inline = [
+        "chmod 700 .ssh/id_rsa.pub",
+        "chmod 700 .ssh/id_rsa",
+        "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
+      ]
+    }
 
-  user_data = <<EOF
+    user_data = <<EOF
 #! /bin/bash
 apt-add-repository ppa":"ansible"/"ansible -y
 apt-get update
@@ -117,18 +120,17 @@ ln -s python3 python
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
 cd /home/ubuntu/
-su ubuntu
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
 ansible-playbook -b -i hosts install-docker.yml
 ansible-playbook -b -i hosts k8s-common.yml
 ansible-playbook -b -i hosts k8s-minion.yml
 EOF
-  tags = {
-    Name = "k8s-minion-${count.index+1}"
-    Comment = "${var.k8s_master_instance_type}"
+    tags = {
+      Name = "k8s-minion-${count.index+1}"
+      Comment = "${var.k8s_minions_instance_type}"
+    }
   }
-}
 
 
 
