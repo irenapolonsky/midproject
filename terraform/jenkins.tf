@@ -55,7 +55,7 @@ resource "aws_instance" "jenkins_slave" {
     subnet_id              = "${aws_subnet.jenkins_Subnet_Private.id}"
     vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
-    associate_public_ip_address = true #====================
+    associate_public_ip_address = false #====================
 
         connection {
         type = "ssh"

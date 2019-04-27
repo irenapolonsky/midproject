@@ -38,6 +38,7 @@ resource "aws_instance" "k8s_master" {
     inline = [
       "chmod 700 .ssh/id_rsa.pub",
       "chmod 700 .ssh/id_rsa",
+      "chmod 700 .ssh/jenkins_key_pair.pem",
       "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
           ]
   }
@@ -106,6 +107,7 @@ resource "aws_instance" "k8s_minion" {
       inline = [
         "chmod 700 .ssh/id_rsa.pub",
         "chmod 700 .ssh/id_rsa",
+        "chmod 700 .ssh/jenkins_key_pair.pem",
         "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
       ]
     }
@@ -122,9 +124,9 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 cd /home/ubuntu/
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
-ansible-playbook -b -i hosts install-docker.yml
-ansible-playbook -b -i hosts k8s-common.yml
-ansible-playbook -b -i hosts k8s-minion.yml
+ansible-playbook -b -i Hosts install-docker.yml
+ansible-playbook -b -i Hosts k8s-common.yml
+ansible-playbook -b -i Hosts k8s-minion.yml
 EOF
     tags = {
       Name = "k8s-minion-${count.index+1}"
