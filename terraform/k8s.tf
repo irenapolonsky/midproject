@@ -52,9 +52,9 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 cd /home/ubuntu/
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
-ansible-playbook -b -i hosts install-docker.yml
-ansible-playbook -b -i hosts k8s-common.yml
-ansible-playbook -b -i hosts k8s-master.yml
+ansible-playbook -b -i Hosts install-docker.yml
+ansible-playbook -b -i Hosts k8s-common.yml
+ansible-playbook -b -i Hosts k8s-master.yml
 
 EOF
 
