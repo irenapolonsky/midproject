@@ -15,19 +15,18 @@ resource "aws_instance" "k8s_master" {
 
   connection {
     type = "ssh"
-#    host = "${aws_instance.k8s_master.public_ip}"
     user = "ubuntu"
     private_key = "${file("jenkins_key_pair.pem")}"
     }
-
-  provisioner "file" {
-    source      = "id_rsa"
-    destination = ".ssh/id_rsa"
- }
-
-  provisioner "file" {
-    source      = "id_rsa.pub"
-    destination = ".ssh/id_rsa.pub"
+//
+//  provisioner "file" {
+//    source      = "id_rsa"
+//    destination = ".ssh/id_rsa"
+// }
+//
+//  provisioner "file" {
+//    source      = "id_rsa.pub"
+//    destination = ".ssh/id_rsa.pub"
  }
   provisioner "file" {
     source      = "jenkins_key_pair.pem"
@@ -36,10 +35,10 @@ resource "aws_instance" "k8s_master" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 700 .ssh/id_rsa.pub",
-      "chmod 700 .ssh/id_rsa",
+//      "chmod 700 .ssh/id_rsa.pub",
+//      "chmod 700 .ssh/id_rsa",
       "chmod 700 .ssh/jenkins_key_pair.pem",
-      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
+//      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
           ]
   }
 
@@ -51,6 +50,7 @@ apt-get install ansible -y
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
 cd /home/ubuntu/
+##copy repo to get ansible files
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
 ansible-playbook -b -i hosts install-docker.yml
