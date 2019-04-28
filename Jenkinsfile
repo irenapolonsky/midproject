@@ -8,7 +8,7 @@ node('docker-slave-general') {
   
   stage('Git') { // Get code from GitLab repository
     git branch: 'master',
-      url: 'https://github.com/irenapolonsky/flask-http.git'
+      url: 'https://github.com/irenapolonsky/midproject.git'
   }
   
   stage('Build') { // Run the docker build
@@ -34,4 +34,11 @@ node('docker-slave-general') {
     }
     return
   }
+  stage('Push') { // Push the image to repository
+   withDockerRegistry([ credentialsId: "docker_hub_credentials", url: "" ]) {
+         sh "docker push ${DockerImage}"
+       }
+   sh "docker rmi ${DockerImage}"
+   return
+ }
 }
