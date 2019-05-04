@@ -1,4 +1,4 @@
----
+         ---
 - name: Install K8S master services
   hosts: all
   tasks:
@@ -13,17 +13,17 @@
 
     - name: K8S | Install Master | Create .kube directory
       file:
-        path: "{{ lookup('env','HOME') }}/.kube"
+        path: "/root/.kube"
         state: directory
 
     - name: K8S | Install Master | Copy admin.conf file to /.kube/config
-      shell: "cp -i /etc/kubernetes/admin.conf {{ lookup('env','HOME') }}/.kube/config"
+      shell: "cp -i /etc/kubernetes/admin.conf /root/.kube/config"
       become: true
       become_method: sudo
 
     - name: K8S | Install Master | Change ownership on /.kube/config
       file:
-        path: "{{ lookup('env','HOME') }}/.kube/config"
+        path: "/root/.kube/config"
         owner: ubuntu
         group: ubuntu
       become: true
