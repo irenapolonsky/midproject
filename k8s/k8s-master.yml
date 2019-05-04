@@ -1,4 +1,3 @@
-         ---
 - name: Install K8S master services
   hosts: all
   tasks:
@@ -21,13 +20,13 @@
       become: true
       become_method: sudo
 
-    - name: K8S | Install Master | Change ownership on /.kube/config
-      file:
-        path: "/root/.kube/config"
-        owner: ubuntu
-        group: ubuntu
-      become: true
-      become_method: sudo
+#    - name: K8S | Install Master | Change ownership on /.kube/config
+#      file:
+#        path: "/root/.kube/config"
+#        owner: ubuntu
+#        group: ubuntu
+#      become: true
+#      become_method: sudo
 
     - name: K8S | Install Master | Install pod network
       shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
