@@ -32,7 +32,7 @@ resource "aws_instance" "k8s_master" {
       "chmod 700 .ssh/id_rsa",
           ]
   }
-user_data = "${element(data.template_file.k8s_template.*.rendered, count.index)}"
+  user_data = "${element(data.template_file.k8s_master_template.*.rendered, count.index)}"
 
   tags = {
     Name = "k8s-master-${count.index+1}"
@@ -74,22 +74,8 @@ resource "aws_instance" "k8s_minion" {
           ]
   }
 
-    user_data = <<EOF
-#! /bin/bash
-apt-add-repository ppa":"ansible"/"ansible -y
-apt-get update
-apt-get install ansible -y
-cd /usr/bin/
-ln -s python3 python
-echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
-echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
-cd /home/ubuntu/
-git clone https://github.com/irenapolonsky/midproject.git
-cd midproject/k8s/
-//ansible-playbook -b -i hosts install-docker.yml
-//ansible-playbook -b -i hosts k8s-common.yml
-//ansible-playbook -b -i hosts k8s-minion.yml --limit 'masters' -vvv
-EOF
+  user_data = "${element(data.template_file.k8s_minion_template.*.rendered, count.index)}"
+
     tags = {
       Name = "k8s-minion-${count.index+1}"
       Comment = "${var.k8s_minions_instance_type}"
