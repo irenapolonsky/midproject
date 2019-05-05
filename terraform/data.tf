@@ -1,6 +1,13 @@
 ##################################################################################
 # Create the user-data for the Consul server
 ##################################################################################
+data "template_file" "k8s_template" {
+  template = "${file("${path.module}/templates/k8s_master_user_data.sh.tpl")}"
+  vars = {
+
+  }
+}
+
 
 data "template_file" "consul_server" {
   count    = "${var.consul_servers}"

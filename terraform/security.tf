@@ -19,6 +19,8 @@ resource "aws_security_group" "k8s-sg" {
     protocol    = "TCP"
     to_port     = 6443
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS from the world"
+
   }
 
   ingress {

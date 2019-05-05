@@ -21,7 +21,7 @@ output "consul servers" {
   value = ["${aws_instance.consul_server.*.public_ip}"]
 }
 ##################################################################################
-output "consul clients" {
-  value = ["${aws_instance.consul_client.*.public_ip}"]
-}
+//output "consul clients" {
+//  value = ["${aws_instance.consul_client.*.public_ip}"]
+//}
 ##################################################################################

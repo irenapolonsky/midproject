@@ -118,13 +118,13 @@ resource "aws_route_table_association" "k8s_private" {
   route_table_id = "${aws_route_table.k8s_internet.id}"
 }
 ##################################################################################
-# Security Groups
+# Roles
 ##################################################################################
 
 # Create an IAM role for the auto-join
 resource "aws_iam_role" "consul-join" {
   name               = "opsschool-consul-join"
-  assume_role_policy = "${file("${path.module}/templates/policies/assume-role.json")}"
+  assume_role_policy = "${file("${path.module}/templates/policies/assume-role-consul.json")}"
 }
 
 # Create the policy
@@ -146,3 +146,24 @@ resource "aws_iam_instance_profile" "consul-join" {
   name  = "opsschool-consul-join"
   role = "${aws_iam_role.consul-join.name}"
 }
+##################################################################################
+//
+//# Create an IAM role for midproject masters
+//resource "aws_iam_role" "mid-master-role" {
+//  name               = "mid-master-role"
+//  assume_role_policy = "${file("${path.module}/templates/policies/assume-role-mid-master.json")}"
+//}
+//
+//
+//# Attach the policy
+//resource "aws_iam_policy_attachment" "mid-master-ec2-full" {
+//  name       = "mid-master-ec2-full"
+//  roles      = ["${aws_iam_role.mid-master-role.name}"]
+//  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+//}
+//
+//# Create the instance profile
+//resource "aws_iam_instance_profile" "mid-master-ec2-full" {
+//  name  = "mid-master-ec2-full"
+//  role = "${aws_iam_role.mid-master-role.name}"
+//}

@@ -6,11 +6,12 @@ resource "aws_instance" "k8s_master" {
   count     = "${var.k8s_masters}"
   ami       = "${data.aws_ami.ubuntu.id}"
   instance_type = "${var.k8s_master_instance_type}"
-  key_name      = "${var.keypair_name}"
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
-  private_ip = "10.0.1.100"
-  vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
   depends_on = ["aws_internet_gateway.k8s_gw"]
+
+  vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
+
+  key_name      = "${var.keypair_name}"
   associate_public_ip_address = true
 
   connection {
@@ -18,16 +19,7 @@ resource "aws_instance" "k8s_master" {
     user = "ubuntu"
     private_key = "${file("jenkins_key_pair.pem")}"
     }
-//
-//  provisioner "file" {
-//    source      = "id_rsa"
-//    destination = ".ssh/id_rsa"
-// }
-//
-//  provisioner "file" {
-//    source      = "id_rsa.pub"
-//    destination = ".ssh/id_rsa.pub"
- }
+
   provisioner "file" {
     source      = "jenkins_key_pair.pem"
     destination = ".ssh/jenkins_key_pair.pem"
@@ -35,33 +27,18 @@ resource "aws_instance" "k8s_master" {
 
   provisioner "remote-exec" {
     inline = [
-//      "chmod 700 .ssh/id_rsa.pub",
-//      "chmod 700 .ssh/id_rsa",
       "chmod 700 .ssh/jenkins_key_pair.pem",
-//      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
+      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
+      "chmod 700 .ssh/id_rsa",
           ]
   }
-
-  user_data = <<EOF
-#! /bin/bash
-apt-add-repository ppa":"ansible"/"ansible -y
-apt-get update
-apt-get install ansible -y
-echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
-echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
-cd /home/ubuntu/
-##copy repo to get ansible files
-git clone https://github.com/irenapolonsky/midproject.git
-cd midproject/k8s/
-ansible-playbook -b -i hosts install-docker.yml
-ansible-playbook -b -i hosts k8s-common.yml
-ansible-playbook -b -i hosts k8s-master.yml
-
-EOF
+user_data = "${element(data.template_file.k8s_template.*.rendered, count.index)}"
 
   tags = {
     Name = "k8s-master-${count.index+1}"
     Comment = "${var.k8s_master_instance_type}"
+    Excercise = "mid-proj"
+    Group = "masters"
   }
 
 }
@@ -77,7 +54,7 @@ resource "aws_instance" "k8s_minion" {
 #  subnet_id     = "${aws_subnet.k8s_Subnet_Private.id}"
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"  #======================
   vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
-  depends_on = ["aws_internet_gateway.k8s_gw"]  #======================
+  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]  #======================
   associate_public_ip_address = true   #======================
 
   connection {
@@ -85,32 +62,17 @@ resource "aws_instance" "k8s_minion" {
     user = "ubuntu"
     private_key = "${file("jenkins_key_pair.pem")}"
     }
-
   provisioner "file" {
-    source      = "id_rsa.pub"
-    destination = ".ssh/id_rsa.pub"
-
- }
-
-  provisioner "file" {
-    source      = "id_rsa"
-    destination = ".ssh/id_rsa"
-
- }
-
-  provisioner "file" {
-    source = "jenkins_key_pair.pem"
+    source      = "jenkins_key_pair.pem"
     destination = ".ssh/jenkins_key_pair.pem"
-
+ }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 700 .ssh/jenkins_key_pair.pem",
+      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
+      "chmod 700 .ssh/id_rsa",
+          ]
   }
-    provisioner "remote-exec" {
-      inline = [
-        "chmod 700 .ssh/id_rsa.pub",
-        "chmod 700 .ssh/id_rsa",
-        "chmod 700 .ssh/jenkins_key_pair.pem",
-        "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
-      ]
-    }
 
     user_data = <<EOF
 #! /bin/bash
@@ -124,13 +86,15 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 cd /home/ubuntu/
 git clone https://github.com/irenapolonsky/midproject.git
 cd midproject/k8s/
-ansible-playbook -b -i hosts install-docker.yml
-ansible-playbook -b -i hosts k8s-common.yml
-ansible-playbook -b -i hosts k8s-minion.yml
+//ansible-playbook -b -i hosts install-docker.yml
+//ansible-playbook -b -i hosts k8s-common.yml
+//ansible-playbook -b -i hosts k8s-minion.yml --limit 'masters' -vvv
 EOF
     tags = {
       Name = "k8s-minion-${count.index+1}"
       Comment = "${var.k8s_minions_instance_type}"
+      Excercise = "mid-proj"
+      Group = "minions"
     }
   }
 

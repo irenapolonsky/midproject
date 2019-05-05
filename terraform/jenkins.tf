@@ -9,6 +9,7 @@ resource "aws_instance" "jenkins_server" {
     subnet_id              = "${aws_subnet.jenkins_Subnet_Public.id}"
     vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
+#    iam_instance_profile   = "${aws_iam_instance_profile.mid-master-ec2-full.name}"
     depends_on = ["aws_internet_gateway.k8s_gw"]
     associate_public_ip_address = true
 
@@ -17,21 +18,7 @@ resource "aws_instance" "jenkins_server" {
         user = "ubuntu"
         private_key = "${file("jenkins_key_pair.pem")}"
     }
-    provisioner "file" {
-        source      = "id_rsa.pub"
-        destination = ".ssh/id_rsa.pub"
- }
-    provisioner "file" {
-        source      = "id_rsa"
-        destination = ".ssh/id_rsa"
- }
-  provisioner "remote-exec" {
-    inline = [
-      "chmod 700 .ssh/id_rsa.pub",
-      "chmod 700 .ssh/id_rsa",
-      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
-          ]
-  }
+
     user_data = <<EOF
 #! /bin/bash
     echo "alias ls='ls -l -a --color -h --group-directories-first'" >> .bashrc
@@ -41,6 +28,8 @@ EOF
       Owner           = "${var.owner}"
       Name            = "Jenkins-${count.index}"
       Comment = "${var.jenkins_server_instance_type}"
+      Excercise = "mid-proj"
+      Group = "jenkins-server"
     }
 }
 
@@ -55,28 +44,28 @@ resource "aws_instance" "jenkins_slave" {
     subnet_id              = "${aws_subnet.jenkins_Subnet_Private.id}"
     vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
-    associate_public_ip_address = false #====================
+    associate_public_ip_address = true #====================
 
-        connection {
-        type = "ssh"
-        user = "ubuntu"
-        private_key = "${file("jenkins_key_pair.pem")}"
-    }
-    provisioner "file" {
-        source      = "id_rsa.pub"
-        destination = ".ssh/id_rsa.pub"
- }
-    provisioner "file" {
-        source      = "id_rsa"
-        destination = ".ssh/id_rsa"
- }
-  provisioner "remote-exec" {
-    inline = [
-      "chmod 700 .ssh/id_rsa.pub",
-      "chmod 700 .ssh/id_rsa",
-      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
-          ]
-  }
+//        connection {
+//        type = "ssh"
+//        user = "ubuntu"
+//        private_key = "${file("jenkins_key_pair.pem")}"
+//    }
+//    provisioner "file" {
+//        source      = "id_rsa.pub"
+//        destination = ".ssh/id_rsa.pub"
+// }
+//    provisioner "file" {
+//        source      = "id_rsa"
+//        destination = ".ssh/id_rsa"
+// }
+//  provisioner "remote-exec" {
+//    inline = [
+//      "chmod 700 .ssh/id_rsa.pub",
+//      "chmod 700 .ssh/id_rsa",
+//      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
+//          ]
+//  }
     user_data = <<EOF
 #! /bin/bash
     echo "alias ls='ls -l -a --color -h --group-directories-first'" >> .bashrc
@@ -86,6 +75,8 @@ EOF
       Owner           = "${var.owner}"
       Name            = "Jenkins-slave${count.index}"
       Comment = "${var.jenkins_slave_instance_type}"
+      Excercise = "mid-proj"
+      Group = "jenkins-slaves"
     }
 }
 

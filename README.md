@@ -1,4 +1,5 @@
-Mid Course assignment
+For AWS - use aws docs and not stack overflow
+Better picture is guaranteed
 
 
 Mid Course assignment
