@@ -5,6 +5,8 @@ set -e
 apt-add-repository ppa":"ansible"/"ansible -y
 apt-get update
 apt-get install ansible -y
+apt-get install awscli -y
+
 #########################################
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
