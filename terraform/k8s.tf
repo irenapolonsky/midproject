@@ -52,27 +52,30 @@ resource "aws_instance" "k8s_minion" {
   instance_type = "${var.k8s_minions_instance_type}"
   key_name      = "${var.keypair_name}"
 #  subnet_id     = "${aws_subnet.k8s_Subnet_Private.id}"
-  subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"  #======================
-  vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
-  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]  #======================
-  associate_public_ip_address = true   #======================
+  subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
 
-  connection {
-    type = "ssh"
-    user = "ubuntu"
-    private_key = "${file("jenkins_key_pair.pem")}"
-    }
-  provisioner "file" {
-    source      = "jenkins_key_pair.pem"
-    destination = ".ssh/jenkins_key_pair.pem"
- }
-  provisioner "remote-exec" {
-    inline = [
-      "chmod 700 .ssh/jenkins_key_pair.pem",
-      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
-      "chmod 700 .ssh/id_rsa",
-          ]
-  }
+  iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
+  vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
+
+  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]
+  associate_public_ip_address = true
+
+//  connection {
+//    type = "ssh"
+//    user = "ubuntu"
+//    private_key = "${file("jenkins_key_pair.pem")}"
+//    }
+//  provisioner "file" {
+//    source      = "jenkins_key_pair.pem"
+//    destination = ".ssh/jenkins_key_pair.pem"
+// }
+//  provisioner "remote-exec" {
+//    inline = [
+//      "chmod 700 .ssh/jenkins_key_pair.pem",
+//      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
+//      "chmod 700 .ssh/id_rsa",
+//          ]
+//  }
 
   user_data = "${element(data.template_file.k8s_minion_template.*.rendered, count.index)}"
 

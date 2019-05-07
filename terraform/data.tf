@@ -1,5 +1,5 @@
 ##################################################################################
-# Create the user-data for the Consul server
+# Create the user-data for k8s master and minions
 ##################################################################################
 data "template_file" "k8s_master_template" {
   template = "${file("${path.module}/templates/k8s_master.sh.tpl")}"
@@ -12,6 +12,9 @@ data "template_file" "k8s_minion_template" {
   vars = {
   }
 }
+##################################################################################
+# Create  user-data for consul server
+##################################################################################
 
 data "template_file" "consul_server" {
   count    = "${var.consul_servers}"

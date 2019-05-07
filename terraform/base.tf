@@ -147,23 +147,31 @@ resource "aws_iam_instance_profile" "consul-join" {
   role = "${aws_iam_role.consul-join.name}"
 }
 ##################################################################################
-//
-//# Create an IAM role for midproject masters
-//resource "aws_iam_role" "mid-master-role" {
-//  name               = "mid-master-role"
-//  assume_role_policy = "${file("${path.module}/templates/policies/assume-role-mid-master.json")}"
-//}
-//
-//
-//# Attach the policy
-//resource "aws_iam_policy_attachment" "mid-master-ec2-full" {
-//  name       = "mid-master-ec2-full"
-//  roles      = ["${aws_iam_role.mid-master-role.name}"]
-//  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-//}
-//
-//# Create the instance profile
-//resource "aws_iam_instance_profile" "mid-master-ec2-full" {
-//  name  = "mid-master-ec2-full"
-//  role = "${aws_iam_role.mid-master-role.name}"
-//}
+
+# Create an IAM role for midproject masters
+resource "aws_iam_role" "ec2_role" {
+  name               = "ec2_role"
+  assume_role_policy = "${file("${path.module}/templates/policies/assume-role-consul.json")}"
+}
+
+# Create the policy
+resource "aws_iam_policy" "ec2_policy" {
+  name        = "ec2_policy"
+  description = "Allows minion nodes to describe instances for getting k8s master private ip."
+  policy      = "${file("${path.module}/templates/policies/describe-instances.json")}"
+}
+
+
+# Attach the policy
+resource "aws_iam_policy_attachment" "ec2_role_policy" {
+  name       = "ec2_role_policy"
+  roles      = ["${aws_iam_role.ec2_role.name}"]
+  policy_arn = "${aws_iam_policy.ec2_policy.arn}"
+
+}
+
+# Create the instance profile
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name  = "ec2_profile"
+  role = "${aws_iam_role.ec2_role.name}"
+}

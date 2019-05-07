@@ -6,6 +6,7 @@ apt-add-repository ppa":"ansible"/"ansible -y
 apt-get update
 apt-get install ansible -y
 apt-get install awscli -y
+apt-get install jq -y
 
 #########################################
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
@@ -27,3 +28,5 @@ sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts install-dock
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-common.yml -vvv
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-master.yml -vvv
 ##################################################
+
+touch /tmp/signal
