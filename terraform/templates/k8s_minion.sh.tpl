@@ -27,7 +27,7 @@ MASTER_PRIVATE_IP=$(aws ec2 describe-instances --region us-east-1 --filters "Nam
 for i in "$MASTER_PRIVATE_IP";
 do
     # Replacing single-spaces with empty
-    if ! [ -z "${i// }" ]; then
+    if ! [[ -z "$i" ]]; then
         sed -i "s/masterIP/$i/g" "vars.yml"
     fi
 done
@@ -40,3 +40,5 @@ done
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts install-docker.yml
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-common.yml
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-minion.yml -vvv
+
+touch /home/ubuntu/minion_success

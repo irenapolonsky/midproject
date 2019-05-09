@@ -11,6 +11,7 @@ apt-get install jq -y
 #########################################
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
+echo "export TMOUT=14400"  >> /home/ubuntu/.bashrc   ### extend timeout of bash session###
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
 cd /home/ubuntu
 
@@ -30,3 +31,5 @@ sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-master.y
 ##################################################
 
 touch /tmp/signal
+
+touch /home/ubuntu/minion_success

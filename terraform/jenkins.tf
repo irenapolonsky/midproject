@@ -7,11 +7,13 @@ resource "aws_instance" "jenkins_server" {
     ami           = "${var.jenkins_server_ami}"
     instance_type = "${var.jenkins_server_instance_type}"
     subnet_id              = "${aws_subnet.jenkins_Subnet_Public.id}"
+    associate_public_ip_address = true
+
     vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
-#    iam_instance_profile   = "${aws_iam_instance_profile.mid-master-ec2-full.name}"
+    iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
+
     depends_on = ["aws_internet_gateway.k8s_gw"]
-    associate_public_ip_address = true
 
     connection {
         type = "ssh"
@@ -19,10 +21,7 @@ resource "aws_instance" "jenkins_server" {
         private_key = "${file("jenkins_key_pair.pem")}"
     }
 
-    user_data = <<EOF
-#! /bin/bash
-    echo "alias ls='ls -l -a --color -h --group-directories-first'" >> .bashrc
-EOF
+    user_data = "${element(data.template_file.jenkins_template.*.rendered, count.index)}"
 
   tags {
       Owner           = "${var.owner}"

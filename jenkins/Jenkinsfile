@@ -12,7 +12,7 @@ node('docker-slave-general') {
   }
   
   stage('Build') { // Run the docker build
-    sh "docker build --tag ${DockerImage} ."
+    sh "docker build -f jenkins/Dockerfile --tag ${DockerImage} ."
   }
   
   stage('Run') { // Run the built image

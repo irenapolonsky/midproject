@@ -42,6 +42,23 @@ resource "aws_instance" "k8s_master" {
   }
 
 }
+
+#####################################################################################################
+#   null resource to wait until user_data scripts finish
+#####################################################################################################
+
+resource "null_resource" "wait_for_k8s_masters" {
+   provisioner "remote-exec" {
+    inline = [
+      "while ! [ -f /tmp/signal ]; do sleep 1; done",
+
+    ]
+  }
+  triggers = {
+    "before" = "${aws_instance.k8s_master.id}"
+  }
+}
+
 #####################################################################################################
 # Create Minion instances for k8s
 #####################################################################################################
@@ -57,25 +74,8 @@ resource "aws_instance" "k8s_minion" {
   iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
   vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
 
-  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]
+  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master","null_resource.wait_for_k8s_masters"]
   associate_public_ip_address = true
-
-//  connection {
-//    type = "ssh"
-//    user = "ubuntu"
-//    private_key = "${file("jenkins_key_pair.pem")}"
-//    }
-//  provisioner "file" {
-//    source      = "jenkins_key_pair.pem"
-//    destination = ".ssh/jenkins_key_pair.pem"
-// }
-//  provisioner "remote-exec" {
-//    inline = [
-//      "chmod 700 .ssh/jenkins_key_pair.pem",
-//      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
-//      "chmod 700 .ssh/id_rsa",
-//          ]
-//  }
 
   user_data = "${element(data.template_file.k8s_minion_template.*.rendered, count.index)}"
 

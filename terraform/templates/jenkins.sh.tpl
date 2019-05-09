@@ -19,3 +19,7 @@ chown -R ubuntu:ubuntu midproject
 ################################ ansible #####################################
 cd /home/ubuntu/midproject/k8s
 #sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts xxxxx.yml
+################################################
+
+
+touch /home/ubuntu/jenkins_success

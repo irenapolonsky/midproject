@@ -12,6 +12,15 @@ data "template_file" "k8s_minion_template" {
   vars = {
   }
 }
+
+##################################################################################
+# Create  user-data for jenkins server
+##################################################################################
+data "template_file" "jenkins_template" {
+  template = "${file("${path.module}/templates/jenkins.sh.tpl")}"
+  vars = {
+  }
+}
 ##################################################################################
 # Create  user-data for consul server
 ##################################################################################
