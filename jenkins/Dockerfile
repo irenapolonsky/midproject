@@ -4,7 +4,7 @@ LABEL maintainer="polonsky.irena@gmail.com"
 
 COPY /app/requirements.txt /
 
-RUN pip install -r /app/requirements.txt
+RUN pip install -r requirements.txt
 
 ADD /app/app.py /
 

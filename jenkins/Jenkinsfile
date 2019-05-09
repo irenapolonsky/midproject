@@ -7,7 +7,7 @@ node('docker-slave-general') {
   }
   
   stage('Git') { // Get code from GitLab repository
-    git branch: 'master',
+    git branch: 'jenkins_config',
       url: 'https://github.com/irenapolonsky/midproject.git'
   }
   
