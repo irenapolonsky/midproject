@@ -15,11 +15,11 @@ node('docker-slave-general') {
   stage('Build') { // Run the docker build
     sh "docker build -f app-docker/Dockerfile --tag ${DockerImageLatest} ."
   }
-  
+
   stage('Run') { // Run the built image
     sh "docker run -d --name webserver --rm -p 8585:5000 ${DockerImageLatest}; sleep 5"
   }
-  
+
   stage('Test') { // Run tests on container
     def dockerOutput = sh (
         script: 'curl http://172.17.0.1:8585/goaway',
@@ -42,5 +42,10 @@ node('docker-slave-general') {
    sh "docker rmi ${DockerImageLatest}"
    return
  }
-
+  stage('Deploy')
+   kubernetesDeploy(
+    configs: 'deploy.yml,svc.yml', enableConfigSubstitution: true,
+    dockerCredentials: [[credentialsId: 'docker_hub_credentials']],
+    kubeconfigId: 'kubeconfig',
+    )
 }
