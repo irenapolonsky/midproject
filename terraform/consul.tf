@@ -1,6 +1,6 @@
 
 ##################################################################################
-# Create the Consul cluster - server - on the same subnet with k8s master
+# Create the Consul cluster - server - on the same subnet with k8s-ansible master
 ##################################################################################
 
 resource "aws_instance" "consul_server" {
@@ -31,7 +31,7 @@ resource "aws_instance" "consul_server" {
 //  key_name      = "${var.keypair_name}"
 //  subnet_id     = "${aws_subnet.k8s_Subnet_Private.id}"
 //  iam_instance_profile   = "${aws_iam_instance_profile.consul-join.name}"
-//  vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
+//  vpc_security_group_ids = ["${aws_security_group.k8s-ansible-sg.id}"]
 //
 //  tags = {
 //    Name = "opsschool-client-${count.index+1}"

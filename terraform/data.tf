@@ -1,5 +1,5 @@
 ##################################################################################
-# Create the user-data for k8s master and minions
+# Create the user-data for k8s-ansible master and minions
 ##################################################################################
 data "template_file" "k8s_master_template" {
   template = "${file("${path.module}/templates/k8s_master.sh.tpl")}"
@@ -14,7 +14,7 @@ data "template_file" "k8s_minion_template" {
 }
 
 ##################################################################################
-# Create  user-data for jenkins server
+# Create  user-data for jenkins-config server
 ##################################################################################
 data "template_file" "jenkins_template" {
   template = "${file("${path.module}/templates/jenkins.sh.tpl")}"

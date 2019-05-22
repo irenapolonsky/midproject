@@ -1,5 +1,5 @@
 #####################################################################################################
-# Create Master instances for k8s
+# Create Master instances for k8s-ansible
 #####################################################################################################
 
 resource "aws_instance" "k8s_master" {
@@ -47,20 +47,27 @@ resource "aws_instance" "k8s_master" {
 #   null resource to wait until user_data scripts finish
 #####################################################################################################
 
-resource "null_resource" "wait_for_k8s_masters" {
-   provisioner "remote-exec" {
-    inline = [
-      "while ! [ -f /tmp/signal ]; do sleep 1; done",
-
-    ]
-  }
-  triggers = {
-    "before" = "${aws_instance.k8s_master.id}"
-  }
-}
+//resource "null_resource" "wait_for_k8s_masters" {
+//
+//  triggers = {
+//    k8s_master_private_ip = "${aws_instance.k8s_master.private_ip}"
+//  }
+//  connection {
+//    host = "${aws_instance.k8s_minion.*.id}"
+//    }
+//
+//  provisioner "remote-exec" {
+//    inline = [
+//      "while ! [ -f /home/ubuntu/terraform_master_success ]; do sleep 1; done",
+//
+//    ]
+//  }
+//
+//
+//}
 
 #####################################################################################################
-# Create Minion instances for k8s
+# Create Minion instances for k8s-ansible
 #####################################################################################################
 
 resource "aws_instance" "k8s_minion" {
@@ -74,7 +81,7 @@ resource "aws_instance" "k8s_minion" {
   iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
   vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
 
-  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master","null_resource.wait_for_k8s_masters"]
+  depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]
   associate_public_ip_address = true
 
   user_data = "${element(data.template_file.k8s_minion_template.*.rendered, count.index)}"

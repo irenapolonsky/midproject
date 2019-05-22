@@ -1,25 +1,28 @@
 ---
-- name: Install K8S common services
+- name: Install Jenkins
   hosts: all
+
+  vars:
+    java_version: "openjdk-8-jre"
+    gpg_key: "https://pkg.jenkins.io/debian/jenkins.io.key"
+    repo_URL: "deb https://pkg.jenkins.io/debian binary/"
+    java_options: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+    cli_jar: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+
   tasks:
-    - name: install wget
+    - name: install java
       apt:
-        name: wget
+        name: "{{java_version}}"
         state: present
 
-    - name: install openjdk
-      apt:
-        name: openjdk-8-jre
-        state: present
-
-    - name: Add Jenkins apt repository key.
+    - name: Get jenkins apt repo key
       apt_key:
-        url: https://pkg.jenkins.io/debian/jenkins.io.key
+        url: "{{gpg_key}}"
         state: present
 
-    - name: Add Jenkins apt repository.
+    - name: Add Jenkins apt repo
       apt_repository:
-        repo: 'deb https://pkg.jenkins.io/debian binary/'
+        repo: "{{repo_URL}}"
         state: present
         update_cache: true
 
@@ -33,25 +36,20 @@
         name: jenkins
         state: present
 
-    - name: start jenkins
-      systemd:
+    - name: Start Jenkins service and enable on boot
+      service:
         name: jenkins
         state: started
-
-    - name: enable jenkins
-      systemd:
-        name: jenkins
-        enabled: true
+        enabled: yes
 
     - name: sleep for 30 seconds and continue with play
       wait_for: timeout=30
-      delegate_to: localhost
 
-    - name: Disable Jenkins setup wizard
+    - name: change defaults for Jenkins automation server to disable Jenkins setup wizard
       lineinfile:
         dest=/etc/default/jenkins
         regexp=^JAVA_ARGS=
-        line=JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+        line=JAVA_ARGS="{{java_options}}"
       become: true
 
     - name: Create initialization scripts directory
@@ -74,7 +72,7 @@
 
     - name: Download CLI jar
       get_url:
-        url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+        url: "cli_jar"
         dest: /opt/jenkins-cli.jar
 
     #- name: Install plugin
@@ -86,7 +84,7 @@
     #  service: name=jenkins state=restarted enabled=yes
     #  when: jenkins_plugins is defined
 
-    - name: init password jenkins
+    - name: init password jenkins for Admin
       shell: cat /var/lib/jenkins/secrets/initialAdminPassword
       changed_when: false
       register: result
@@ -135,6 +133,6 @@
     #  become: yes
     #  become_method: sudo
 
-    - name: print init password jenkins
+    - name: print init password jenkins Admin
       debug:
         var: result.stdout

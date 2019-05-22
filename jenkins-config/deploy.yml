@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: hello-pod
-        image: polonskyirena/webserver:v1.0
+        image: polonskyirena/midproj:latest
         ports:
         - containerPort: 8080

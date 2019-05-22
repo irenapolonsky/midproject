@@ -13,6 +13,6 @@ spec:
     spec:
       containers:
       - name: hello-ctr
-        image: polonskyirena/app_py:v0
+        image: polonskyirena/midproj:latest
         ports:
         - containerPort: 5000

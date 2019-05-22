@@ -1,4 +1,4 @@
-node('docker-slave-general') { 
+node('') {
   def DockerImage = "polonskyirena/webserver:v1.0"
   def DockerImageLatest = "polonskyirena/midproj:latest"
   

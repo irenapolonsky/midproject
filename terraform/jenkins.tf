@@ -6,10 +6,10 @@ resource "aws_instance" "jenkins_server" {
     count         = "${var.jenkins_servers}"
     ami           = "${var.jenkins_server_ami}"
     instance_type = "${var.jenkins_server_instance_type}"
-    subnet_id              = "${aws_subnet.jenkins_Subnet_Public.id}"
+    subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
     associate_public_ip_address = true
 
-    vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
+    vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
     key_name               = "${var.keypair_name}"
     iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
 
@@ -23,7 +23,13 @@ resource "aws_instance" "jenkins_server" {
 
     user_data = "${element(data.template_file.jenkins_template.*.rendered, count.index)}"
 
-  tags {
+    provisioner "file" {
+    source      = "jenkins_key_pair.pem"
+    destination = ".ssh/jenkins_key_pair.pem"
+    }
+
+
+    tags {
       Owner           = "${var.owner}"
       Name            = "Jenkins-${count.index}"
       Comment = "${var.jenkins_server_instance_type}"
@@ -40,8 +46,8 @@ resource "aws_instance" "jenkins_slave" {
     count         = "${var.jenkins_slaves}"
     ami           = "${data.aws_ami.ubuntu.id}"
     instance_type = "${var.jenkins_slave_instance_type}"
-    subnet_id              = "${aws_subnet.jenkins_Subnet_Private.id}"
-    vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
+    subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
+    vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
     key_name               = "${var.keypair_name}"
     associate_public_ip_address = true #====================
 
