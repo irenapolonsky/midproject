@@ -1,17 +1,17 @@
-node('') {
+node('docker-slave-general') {
   def DockerImage = "polonskyirena/webserver:v1.0"
   def DockerImageLatest = "polonskyirena/midproj:latest"
-  
+
   stage('Pre') { // Run pre-build steps
     cleanWs()
     sh "docker rm -f webserver || true"
   }
-  
+
   stage('Git') { // Get code from GitLab repository
     git branch: 'jenkins_config',
       url: 'https://github.com/irenapolonsky/midproject.git'
   }
-  
+
   stage('Build') { // Run the docker build
     sh "docker build -f app-docker/Dockerfile --tag ${DockerImageLatest} ."
   }
@@ -44,7 +44,7 @@ node('') {
  }
   stage('Deploy')
    kubernetesDeploy(
-    configs: 'deploy.yml,svc.yml', enableConfigSubstitution: true,
+    configs: 'jenkins-config/deploy.yml,jenkins-config/svc.yml', enableConfigSubstitution: true,
     dockerCredentials: [[credentialsId: 'docker_hub_credentials']],
     kubeconfigId: 'kubeconfig',
     )
