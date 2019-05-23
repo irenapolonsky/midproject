@@ -18,7 +18,7 @@ resource "aws_instance" "jenkins_server" {
     connection {
         type = "ssh"
         user = "ubuntu"
-        private_key = "${file("jenkins_key_pair.pem")}"
+        private_key = "${file(var.pem_path)}"
     }
 
     user_data = "${element(data.template_file.jenkins_template.*.rendered, count.index)}"
