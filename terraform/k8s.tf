@@ -17,11 +17,12 @@ resource "aws_instance" "k8s_master" {
   connection {
     type = "ssh"
     user = "ubuntu"
-    private_key = "${file("jenkins_key_pair.pem")}"
+    private_key = "${file(var.pem_path)}"
+
     }
 
   provisioner "file" {
-    source      = "jenkins_key_pair.pem"
+    source      = "${var.pem_path}"
     destination = ".ssh/jenkins_key_pair.pem"
  }
 

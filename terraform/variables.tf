@@ -13,6 +13,16 @@ variable "vpcCIDRblock" {
   description = "VPC CIDR block"
   default = "10.0.0.0/16"
 }
+
+variable "pem_path" {
+  type    = "string"
+  default = "c:\\Users\\polon\\opsschool\\jenkins_key_pair.pem"
+
+}
+
+
+
+
 ##################################################################################
 # Subnet & Route Table RESOURCES VARIABLES
 ##################################################################################

@@ -24,7 +24,7 @@ resource "aws_instance" "jenkins_server" {
     user_data = "${element(data.template_file.jenkins_template.*.rendered, count.index)}"
 
     provisioner "file" {
-    source      = "jenkins_key_pair.pem"
+    source      = "${var.pem_path}"
     destination = ".ssh/jenkins_key_pair.pem"
     }
 
