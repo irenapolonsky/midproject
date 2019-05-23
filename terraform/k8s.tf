@@ -93,9 +93,3 @@ resource "aws_instance" "k8s_minion" {
       Group = "minions"
     }
   }
-
-
-
-
-
-

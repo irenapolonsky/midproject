@@ -4,7 +4,7 @@ output "k8s masters" {
 }
 ##################################################################################
 output "k8s minions" {
-  value = ["${aws_instance.k8s_minion.*.private_ip}" ,"${aws_instance.k8s_minion.*.public_ip}"]
+  value = ["${aws_instance.k8s_minion.*.public_ip}"]
 }
 ##################################################################################
 
@@ -12,10 +12,6 @@ output "jenkins_server_public_ip" {
   value = "${join(",", aws_instance.jenkins_server.*.public_ip)}"
 }
 
-##################################################################################
-output "jenkins_slave_private_ip" {
-  value = "${join(",", aws_instance.jenkins_slave.*.private_ip)}"
-}
 ##################################################################################
 output "consul servers" {
   value = ["${aws_instance.consul_server.*.public_ip}"]

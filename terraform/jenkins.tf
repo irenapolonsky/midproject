@@ -31,7 +31,7 @@ resource "aws_instance" "jenkins_server" {
 
     tags {
       Owner           = "${var.owner}"
-      Name            = "Jenkins-${count.index}"
+      Name            = "Jenkins-server"
       Comment = "${var.jenkins_server_instance_type}"
       Excercise = "mid-proj"
       Group = "jenkins-server"
@@ -51,30 +51,7 @@ resource "aws_instance" "jenkins_slave" {
     key_name               = "${var.keypair_name}"
     associate_public_ip_address = true #====================
 
-//        connection {
-//        type = "ssh"
-//        user = "ubuntu"
-//        private_key = "${file("jenkins_key_pair.pem")}"
-//    }
-//    provisioner "file" {
-//        source      = "id_rsa.pub"
-//        destination = ".ssh/id_rsa.pub"
-// }
-//    provisioner "file" {
-//        source      = "id_rsa"
-//        destination = ".ssh/id_rsa"
-// }
-//  provisioner "remote-exec" {
-//    inline = [
-//      "chmod 700 .ssh/id_rsa.pub",
-//      "chmod 700 .ssh/id_rsa",
-//      "cat .ssh/id_rsa.pub >> .ssh/authorized_keys",
-//          ]
-//  }
-    user_data = <<EOF
-#! /bin/bash
-    echo "alias ls='ls -l -a --color -h --group-directories-first'" >> .bashrc
-EOF
+user_data = "${element(data.template_file.jenkins_template.*.rendered, count.index)}"
 
     tags {
       Owner           = "${var.owner}"

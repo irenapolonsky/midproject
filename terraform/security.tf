@@ -63,11 +63,11 @@ resource "aws_security_group" "k8s-sg" {
   }
 ################ to solve k8s problem from outside to the range of the ports#########
   ingress {
-    from_port   = 0
-    to_port     = 0
+    from_port   = 31616
+    to_port     = 31616
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow from the world to any port"
+    description = "Allow from the world to app port"
   }
   egress {
     from_port       = 0
