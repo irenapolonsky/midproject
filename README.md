@@ -1,4 +1,5 @@
-Script
+To present the project:
+
 mkdir opsschool-midproj-demo
 
 cd opsschool-midproj-demo/
