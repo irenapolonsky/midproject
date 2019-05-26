@@ -1,5 +1,5 @@
 #####################################################################################################
-# Create Master instances for k8s
+# Create Master instances for k8s-ansible
 #####################################################################################################
 
 resource "aws_instance" "k8s_master" {
@@ -17,11 +17,12 @@ resource "aws_instance" "k8s_master" {
   connection {
     type = "ssh"
     user = "ubuntu"
-    private_key = "${file("jenkins_key_pair.pem")}"
+    private_key = "${file(var.pem_path)}"
+
     }
 
   provisioner "file" {
-    source      = "jenkins_key_pair.pem"
+    source      = "${var.pem_path}"
     destination = ".ssh/jenkins_key_pair.pem"
  }
 
@@ -42,8 +43,32 @@ resource "aws_instance" "k8s_master" {
   }
 
 }
+
 #####################################################################################################
-# Create Minion instances for k8s
+#   null resource to wait until user_data scripts finish
+#####################################################################################################
+
+//resource "null_resource" "wait_for_k8s_masters" {
+//
+//  triggers = {
+//    k8s_master_private_ip = "${aws_instance.k8s_master.private_ip}"
+//  }
+//  connection {
+//    host = "${aws_instance.k8s_minion.*.id}"
+//    }
+//
+//  provisioner "remote-exec" {
+//    inline = [
+//      "while ! [ -f /home/ubuntu/terraform_master_success ]; do sleep 1; done",
+//
+//    ]
+//  }
+//
+//
+//}
+
+#####################################################################################################
+# Create Minion instances for k8s-ansible
 #####################################################################################################
 
 resource "aws_instance" "k8s_minion" {
@@ -60,23 +85,6 @@ resource "aws_instance" "k8s_minion" {
   depends_on = ["aws_internet_gateway.k8s_gw","aws_instance.k8s_master"]
   associate_public_ip_address = true
 
-//  connection {
-//    type = "ssh"
-//    user = "ubuntu"
-//    private_key = "${file("jenkins_key_pair.pem")}"
-//    }
-//  provisioner "file" {
-//    source      = "jenkins_key_pair.pem"
-//    destination = ".ssh/jenkins_key_pair.pem"
-// }
-//  provisioner "remote-exec" {
-//    inline = [
-//      "chmod 700 .ssh/jenkins_key_pair.pem",
-//      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
-//      "chmod 700 .ssh/id_rsa",
-//          ]
-//  }
-
   user_data = "${element(data.template_file.k8s_minion_template.*.rendered, count.index)}"
 
     tags = {
@@ -86,9 +94,3 @@ resource "aws_instance" "k8s_minion" {
       Group = "minions"
     }
   }
-
-
-
-
-
-

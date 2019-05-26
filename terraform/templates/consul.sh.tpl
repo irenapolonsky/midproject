@@ -74,3 +74,6 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
+
+
+touch /home/ubuntu/consul_success

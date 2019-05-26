@@ -1,83 +1,33 @@
-For AWS - use aws docs and not stack overflow
-Better picture is guaranteed
+To present the project:
 
+mkdir opsschool-midproj-demo
 
-Mid Course assignment
+cd opsschool-midproj-demo/
 
+git clone https://github.com/irenapolonsky/midproject.git
 
-In this assignment you will build a small prod like environment, this can AND SHOULD be used later as the base foundation for your final project
+cd midproject/
 
+git checkout jenkins_config
 
-This is a draft for the final project so not everything may be 100% clear, if you have any question that needs clarification, please ping me and we’ll update the 
-assignment.
+cd terraform/
 
+terraform init
 
-For the mid project we would like you to complete the following
-
-
-do everything automatically
-
-Use the following tools
-
-Ansible
-
-Terraform
-
-K8s
-
-Docker
-
-Consul
-
-Create two VPCs (privet and public)
-
-Using Ansible install and configure k8s
-
-Pick a small application (from github) 
-
-Run the following process (using Jenkins)
-
-Clone your repo
-
-Run tests (if exist)
-
-Build a docker image of your application
-
-Put new docker image in docker hub
-
-Deploy your application in K8s and expose the service to the world
-
-The application needs to register with consul 
-
-
-You should add a test file (depending on the output of terraform)
-
-
-
-To deploy the environment run:
-
- 
-
-git clone https://github.com/Israel_israeli/my_project_repo.git
-
-cd my_repo/teraform
+terraform plan
 
 terraform apply --auto-approve
 
- 
+Open jenkins jenkinsip:8080
 
- 
+jenkins/jenkins
 
-To check your environment run:
+Credentials
 
- 
+kubeconfig - replace k8s_masterIP by actual from terraform
 
-consul: curl XXXXXX:
+run Demo-Pipe
 
-Jenkins: YYYYY
+In browser: - port 31616
 
-
-
-
-
-# midproject
+k8s_masterIP:31616 

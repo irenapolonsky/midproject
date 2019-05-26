@@ -1,4 +1,4 @@
-# flask_web/app.py
+# flask_web/oldapp.py
 
 from flask import Flask
 app = Flask(__name__)
@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hey, we have Flask in a Docker container!'
+    return 'Nice to meet you!'
 
 
 @app.route('/goaway')
