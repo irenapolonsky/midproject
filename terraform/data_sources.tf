@@ -13,6 +13,13 @@ data "template_file" "k8s_minion_template" {
   }
 }
 
+data "template_file" "vars_yml" {
+  template = "${file("../k8-ansible/vars.yml")}"
+
+  vars {
+    k8s_master = "${aws_instance.k8s_master.*.public_ip}"
+  }
+}
 ##################################################################################
 # Create  user-data for jenkins-config server
 ##################################################################################
