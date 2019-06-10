@@ -11,7 +11,8 @@ resource "aws_instance" "consul_server" {
   subnet_id              = "${aws_subnet.k8s_Subnet_Public.id}"
   iam_instance_profile   = "${aws_iam_instance_profile.consul-join.name}"
   vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
-
+  depends_on = ["aws_internet_gateway.k8s_igw"]
+  associate_public_ip_address = true
   tags = {
     Name = "opsschool-server-${count.index+1}"
     consul_server = "true"

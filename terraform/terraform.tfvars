@@ -1,9 +1,6 @@
-##aws_access_key = "AKIAJXQE7H57NP3ZVVEA"
+####################################
+aws_access_key_id = "AKIAZYHNJWXEQWCAEQ4I"
+aws_secret_access_key = "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"
 
-##aws_secret_key = "J1Y6njEQdPWKhKXsKt5nSVHS99kx1v1JbFp07oDa"
-
-##private_key_path = "C:\\Terraform-base\\Terraform-base\\PubA.pem"
-
-private_key_path = "C:\\Users\\polon\\PycharmProjects\\Terraform\\Terraform\\terraform-key-pair.pem"
-
-
+git_branch = "jenkins_config"
+prefix = "jenkins_config"

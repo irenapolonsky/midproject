@@ -4,7 +4,7 @@
 
 resource "aws_instance" "k8s_master" {
   count     = "${var.k8s_masters}"
-  ami       = "${data.aws_ami.ubuntu.id}"
+  ami       = "${data.aws_ami.ubuntu16_4.id}"
   instance_type = "${var.k8s_master_instance_type}"
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
   depends_on = ["aws_internet_gateway.k8s_igw"]
@@ -73,7 +73,7 @@ resource "aws_instance" "k8s_master" {
 
 resource "aws_instance" "k8s_minion" {
   count = "${var.k8s_minions}"
-  ami       = "${data.aws_ami.ubuntu.id}"
+  ami       = "${data.aws_ami.ubuntu16_4.id}"
   instance_type = "${var.k8s_minions_instance_type}"
   key_name      = "${var.keypair_name}"
 #  subnet_id     = "${aws_subnet.k8s_Subnet_Private.id}"

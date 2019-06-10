@@ -14,10 +14,10 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
 ################################################
 
-cd /home/ubuntu/
-git clone https://github.com/irenapolonsky/midproject.git
+#cd /home/ubuntu/
+#git clone https://github.com/irenapolonsky/midproject.git
 cd /home/ubuntu/midproject/
-git checkout jenkins_config
+#git checkout ${git_branch}
 chown -R ubuntu:ubuntu /home/ubuntu/midproject
 cd /home/ubuntu/midproject/
 

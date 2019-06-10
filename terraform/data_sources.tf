@@ -4,28 +4,25 @@
 data "template_file" "k8s_master_template" {
   template = "${file("${path.module}/templates/k8s_master.sh.tpl")}"
   vars = {
+    git_branch =  "${var.git_branch}"
   }
 }
 
 data "template_file" "k8s_minion_template" {
   template = "${file("${path.module}/templates/k8s_minion.sh.tpl")}"
   vars = {
+      k8s_master_ip = "${aws_instance.k8s_master.public_ip}"
+      git_branch =  "${var.git_branch}"
   }
 }
 
-data "template_file" "vars_yml" {
-  template = "${file("../k8-ansible/vars.yml")}"
-
-  vars {
-    k8s_master = "${aws_instance.k8s_master.*.public_ip}"
-  }
-}
 ##################################################################################
 # Create  user-data for jenkins-config server
 ##################################################################################
 data "template_file" "jenkins_template" {
   template = "${file("${path.module}/templates/jenkins.sh.tpl")}"
   vars = {
+    git_branch =  "${var.git_branch}"
   }
 }
 ##################################################################################
@@ -65,7 +62,7 @@ data "template_file" "consul_client" {
   }
 }
 # Get Ubuntu Canonical AMI
-data "aws_ami" "ubuntu" {
+data "aws_ami" "ubuntu16_4" {
     most_recent = true
     filter {
         name   = "name"
@@ -77,4 +74,6 @@ data "aws_ami" "ubuntu" {
     }
     owners = ["099720109477"] # Canonical
 }
+
+
 

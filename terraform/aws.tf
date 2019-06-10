@@ -8,14 +8,14 @@ provider "aws" {
 ##################################################################################
 resource "aws_vpc" "jenkins_VPC" {
   cidr_block       = "10.0.0.0/16"
-
+  enable_dns_hostnames = true
   tags = {
     Name = "jenkins_vpc"
     Comment = "jenkins"
   }
 }resource "aws_vpc" "k8s_VPC" {
   cidr_block       = "10.0.0.0/16"
-
+  enable_dns_hostnames = true
   tags = {
     Name = "k8c_vpc"
   }
@@ -60,13 +60,13 @@ resource "aws_subnet" "jenkins_Subnet_Private" {
 ##################################################################################
 # Internet Gateways
 ##################################################################################
-resource "aws_internet_gateway" "k8s_gw" {
+resource "aws_internet_gateway" "k8s_igw" {
   vpc_id = "${aws_vpc.k8s_VPC.id}"
   tags = {
     Name = "k8s_gw"
   }
 }
-resource "aws_internet_gateway" "jenkins_gw" {
+resource "aws_internet_gateway" "jenkins_igw" {
   vpc_id = "${aws_vpc.jenkins_VPC.id}"
   tags = {
     Name = "jenkins_gw"
@@ -79,7 +79,7 @@ resource "aws_route_table" "k8s_internet" {
   vpc_id = "${aws_vpc.k8s_VPC.id}"
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.k8s_gw.id}"
+    gateway_id = "${aws_internet_gateway.k8s_igw.id}"
   }
   tags = {
     Name = "k8s_internet"
@@ -90,7 +90,7 @@ resource "aws_route_table" "jenkins_internet" {
   vpc_id = "${aws_vpc.jenkins_VPC.id}"
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.jenkins_gw.id}"
+    gateway_id = "${aws_internet_gateway.jenkins_igw.id}"
   }
   tags = {
     Name = "jenkins_rt"
@@ -175,3 +175,9 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   name  = "ec2_profile"
   role = "${aws_iam_role.ec2_role.name}"
 }
+
+######################################################################################
+#
+######################################################################################
+
+

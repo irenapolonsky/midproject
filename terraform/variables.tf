@@ -1,9 +1,27 @@
 ##################################################################################
 # PROVIDER VARIABLES
 ###################################################################################
+#variable "access_key" {}
+#variable "secret_key" {}
+
 variable "region" {
   description = "AWS region for VMs"
   default = "us-east-1"
+}
+
+variable "pem_path" {
+  type = "string"
+  default = "c:\\Users\\polon\\opsschool\\jenkins_key_pair.pem"
+}
+
+variable "git_branch" {
+  type = "string"
+  default = "final_project"
+}
+
+variable "prefix" {
+  type = "string"
+  default = ""
 }
 ##################################################################################
 # VPC RESOURCES VARIABLES
@@ -13,15 +31,6 @@ variable "vpcCIDRblock" {
   description = "VPC CIDR block"
   default = "10.0.0.0/16"
 }
-
-variable "pem_path" {
-  type    = "string"
-  default = "c:\\Users\\polon\\opsschool\\jenkins_key_pair.pem"
-
-}
-
-
-
 
 ##################################################################################
 # Subnet & Route Table RESOURCES VARIABLES
@@ -57,6 +66,7 @@ variable "associate_public_ip_address" {
 variable "jenkins_server_instance_type" {
   description = "instance for Jenkins master node"
   default = "t3.small"
+#  default = "t2.micro"
 }
 variable "jenkins_slave_instance_type" {
   description = "instance for Jenkins slave node"
@@ -64,8 +74,8 @@ variable "jenkins_slave_instance_type" {
 }
 variable "k8s_master_instance_type" {
   description = "instance for k8s servers slave node"
-  default = "t2.medium"
-#  default = "t3.micro"
+#  default = "t2.medium"
+  default = "t3.micro"
 }
 variable "k8s_minions_instance_type" {
   description = "instance for k8s servers slave node"
@@ -82,13 +92,13 @@ variable "consul_client_instance_type" {
 #----------------------------------------Instance AMI-----------------------------
 variable "jenkins_server_ami" {
     description = "AMI for jenkins Master with docker slave"
-#	default = "ami-0626759c3363e9735" ### ami from adam
     default = "ami-04aa07606c6502924" ### ami with kubernetes plugin
 }
 variable "jenkins_slave_ami" {
   description = "default is not used. latest canonical is selected"
   default = "ami-028d6461780695a43"
 }
+
 variable "consul_server_ami" {
   description = "ami to use - based on region"
   default = {
@@ -96,7 +106,6 @@ variable "consul_server_ami" {
     "us-east-2" = "ami-0653e888ec96eab9b"
   }
 }
-
 #---------------------------------Key Pair name------------------------------------
 variable "keypair_name" {
   description = "Name of the KeyPair used for all nodes"
@@ -152,4 +161,3 @@ variable "consul_version" {
 variable owner {
   default = "Jenkins"
 }
-

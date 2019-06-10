@@ -13,7 +13,7 @@ resource "aws_instance" "jenkins_server" {
     key_name               = "${var.keypair_name}"
     iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
 
-    depends_on = ["aws_internet_gateway.k8s_gw"]
+    depends_on = ["aws_internet_gateway.k8s_igw"]
 
     connection {
         type = "ssh"
@@ -44,7 +44,7 @@ resource "aws_instance" "jenkins_server" {
 
 resource "aws_instance" "jenkins_slave" {
     count         = "${var.jenkins_slaves}"
-    ami           = "${data.aws_ami.ubuntu.id}"
+    ami           = "${data.aws_ami.ubuntu16_4.id}"
     instance_type = "${var.jenkins_slave_instance_type}"
     subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
     vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
@@ -55,7 +55,7 @@ user_data = "${element(data.template_file.jenkins_template.*.rendered, count.ind
 
     tags {
       Owner           = "${var.owner}"
-      Name            = "Jenkins-slave${count.index}"
+      Name            = "Jenkins-slave${count.index+1}"
       Comment = "${var.jenkins_slave_instance_type}"
       Excercise = "mid-proj"
       Group = "jenkins-slaves"

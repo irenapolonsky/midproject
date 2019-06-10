@@ -1,11 +1,13 @@
-FROM python:3.7-alpine
+FROM jenkins/jenkins:lts
+COPY root/setup/plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
-LABEL maintainer="polonsky.irena@gmail.com"
+USER root
+RUN apt-get update && apt-get install -y python awscli sudo jq
 
-COPY /app/requirements.txt /
+RUN id
 
-RUN pip install -r requirements.txt
+USER 0
+RUN addgroup --gid 999 docker && usermod -aG docker jenkins
+USER jenkins
 
-ADD /app/app.py /
-
-CMD [ "python3", "./app.py" ]

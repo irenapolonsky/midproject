@@ -25,7 +25,7 @@ unzip consul.zip >/dev/null
 sudo chmod +x consul
 sudo mv consul /usr/local/bin/consul
 
-# Setup Consulconsul.sh.tpl
+# Setup consul.sh.tpl
 sudo mkdir -p /opt/consul
 sudo mkdir -p /etc/consul.d
 sudo mkdir -p /run/consul
@@ -33,7 +33,7 @@ sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 {
   "advertise_addr": "$PRIVATE_IP",
   "data_dir": "/opt/consul",
-  "datacenter": "opsschool",
+  "datacenter": "irena.polonsky",
   "encrypt": "uDBV4e+LbFW3019YKPxIrg==",
   "disable_remote_exec": true,
   "disable_update_check": true,
@@ -47,6 +47,12 @@ EOF
 sudo useradd consul
 sudo chown -R consul:consul /opt/consul /etc/consul.d /run/consul
 
+################################################
+echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config
+echo "ClientAliveCountMax 720" >> /etc/ssh/sshd_config
+echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
+echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
+################################################
 
 # Configure consul service
 sudo tee /etc/systemd/system/consul.service > /dev/null <<"EOF"
@@ -77,3 +83,4 @@ sudo systemctl start consul.service
 
 
 touch /home/ubuntu/consul_success
+

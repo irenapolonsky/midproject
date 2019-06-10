@@ -21,7 +21,7 @@ cd /home/ubuntu
 #########copy repo to get ansible files
 git clone https://github.com/irenapolonsky/midproject.git
 cd /home/ubuntu/midproject/
-git checkout jenkins_config
+git checkout ${git_branch}
 chown -R ubuntu:ubuntu /home/ubuntu/midproject
 cd /home/ubuntu/midproject/k8s-ansible
 
@@ -30,6 +30,7 @@ cd /home/ubuntu/midproject/k8s-ansible
 ###############Retrieve private ip to update k8s_master_ip in vars.yml
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 sed -i "s/masterIP/$PRIVATE_IP/g" "vars.yml"
+
 
 
 ###########################################################
