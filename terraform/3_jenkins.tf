@@ -9,7 +9,7 @@ resource "aws_instance" "jenkins_server" {
     subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
     associate_public_ip_address = true
 
-    vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
+    vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
     iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
 
@@ -34,7 +34,7 @@ resource "aws_instance" "jenkins_server" {
       Name            = "Jenkins-server"
       Comment = "${var.jenkins_server_instance_type}"
       Excercise = "mid-proj"
-      Group = "jenkins-server"
+      Group = "jenkins"
     }
 }
 
@@ -47,7 +47,7 @@ resource "aws_instance" "jenkins_slave" {
     ami           = "${data.aws_ami.ubuntu16_4.id}"
     instance_type = "${var.jenkins_slave_instance_type}"
     subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
-    vpc_security_group_ids = ["${aws_security_group.k8s-sg.id}"]
+    vpc_security_group_ids = ["${aws_security_group.jenkins_sg.id}"]
     key_name               = "${var.keypair_name}"
     associate_public_ip_address = true #====================
 
@@ -58,7 +58,7 @@ user_data = "${element(data.template_file.jenkins_template.*.rendered, count.ind
       Name            = "Jenkins-slave${count.index+1}"
       Comment = "${var.jenkins_slave_instance_type}"
       Excercise = "mid-proj"
-      Group = "jenkins-slaves"
+      Group = "jenkins"
     }
 }
 

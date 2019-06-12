@@ -1,9 +1,9 @@
 ##################################################################################
-# 2 Security Groups - for jenkins-config and K8S
+# 4 Security Groups - for k8s, jenkins,consul and mysql
 ##################################################################################
 
-resource "aws_security_group" "k8s-sg" {
-  name        = "k8s-sg"
+resource "aws_security_group" "k8s_sg" {
+  name        = "k8s_sg"
   description = "Allow ssh & consul inbound traffic"
   vpc_id      = "${aws_vpc.k8s_VPC.id}"
 
@@ -14,12 +14,13 @@ resource "aws_security_group" "k8s-sg" {
     self        = true
     description = "Allow all inside security group"
   }
-   ingress {
+
+  ingress {
     from_port   = 6443
     protocol    = "TCP"
     to_port     = 6443
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS from the world"
+    description = "Allow k8s minion to join k8s master"
 
   }
 
@@ -53,15 +54,8 @@ resource "aws_security_group" "k8s-sg" {
     protocol = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow traffic from HTTPS port 443"
-  }  ######################
-  ingress {
-    from_port   = 8500
-    to_port     = 8500
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow consul UI access from the world"
   }
-################ to solve k8s problem from outside to the range of the ports#########
+################ port to python module UI #########
   ingress {
     from_port   = 31616
     to_port     = 31616
@@ -125,5 +119,78 @@ resource "aws_security_group" "jenkins_sg" {
     protocol = "-1"
     cidr_blocks = [
       "0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "mysql_sg" {
+  name        = "mysql_sg"
+  description = "Allow ssh & mysql inbound traffic"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+    description = "Allow all inside security group"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow ssh from the world"
+  }
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow accessing MYSQL/Aurora from the worls"
+  }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+    description     = "Allow all outside security group"
+  }
+}
+
+resource "aws_security_group" "consul_sg" {
+  name        = "consul_sg"
+  description = "Allow ssh & consul inbound traffic"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+    description = "Allow all inside security group"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow ssh from the world"
+  }
+
+  ingress {
+    from_port   = 8500
+    to_port     = 8500
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow consul UI access from the world"
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+    description     = "Allow all outside security group"
   }
 }
