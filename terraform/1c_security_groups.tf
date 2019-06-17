@@ -1,5 +1,5 @@
 ##################################################################################
-# 4 Security Groups - for k8s, jenkins,consul and mysql
+# Security Groups - for k8s
 ##################################################################################
 
 resource "aws_security_group" "k8s_sg" {
@@ -74,11 +74,12 @@ resource "aws_security_group" "k8s_sg" {
 }
 
 ##################################################################################
+# 4 Security Groups - for jenkins
 ##################################################################################
 resource "aws_security_group" "jenkins_sg" {
   name = "jenkins_sg"
   description = "Security group for Jenkins"
-  vpc_id = "${aws_vpc.jenkins_VPC.id}"
+  vpc_id = "${aws_vpc.k8s_VPC.id}"
   ######################
   # Allow ICMP from control host IP
   ingress {
@@ -121,9 +122,12 @@ resource "aws_security_group" "jenkins_sg" {
       "0.0.0.0/0"]
   }
 }
-
+##################################################################################
+# Security Groups - for mysql
+##################################################################################
 resource "aws_security_group" "mysql_sg" {
   name        = "mysql_sg"
+  vpc_id      = "${aws_vpc.k8s_VPC.id}"
   description = "Allow ssh & mysql inbound traffic"
 
   ingress {
@@ -158,8 +162,75 @@ resource "aws_security_group" "mysql_sg" {
   }
 }
 
+##################################################################################
+# Security Groups - for monitoring
+##################################################################################
+resource "aws_security_group" "monitoring_sg" {
+  name        = "monitoring_sg"
+  vpc_id      = "${aws_vpc.k8s_VPC.id}"
+  description = "Allow ssh .... inbound traffic"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+    description = "Allow all inside security group"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow ssh from the world"
+  }
+
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Prometheus server"
+  }
+
+    ingress {
+    from_port   = 9091
+    to_port     = 9091
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Pushgateway"
+  }
+
+    ingress {
+    from_port   = 9093
+    to_port     = 9093
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Alertmanager"
+  }
+
+    ingress {
+    from_port   = 9104
+    to_port     = 9104
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Alertmanager"
+  }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+    description     = "Allow all outside security group"
+  }
+}
+##################################################################################
+# 4 Security Groups - for consul
+##################################################################################
 resource "aws_security_group" "consul_sg" {
   name        = "consul_sg"
+  vpc_id      = "${aws_vpc.k8s_VPC.id}"
   description = "Allow ssh & consul inbound traffic"
 
   ingress {
@@ -183,7 +254,46 @@ resource "aws_security_group" "consul_sg" {
     to_port     = 8500
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow consul UI access from the world"
+    description = "HTTP: The HTTP API (TCP Only)"
+  }
+
+  ingress {
+    from_port   = 8600
+    to_port     = 8600
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "DNS: The DNS server (TCP and UDP)"
+  }
+
+  ingress {
+    from_port   = 8300
+    to_port     = 8300
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "server: Server RPC address (TCP Only)"
+  }
+  ingress {
+    from_port   = 8301
+    to_port     = 8301
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "LAN Serf: The Serf LAN port (TCP and UDP)"
+  }
+
+    ingress {
+    from_port   = 8302
+    to_port     = 8302
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Wan Serf: The Serf WAN port TCP and UDP)"
+  }
+
+    ingress {
+    from_port   = 21000
+    to_port     = 21255
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Sidecar Proxy. Port number to use for automatically assigned sidecar service registrations"
   }
 
   egress {

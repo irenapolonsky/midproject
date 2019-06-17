@@ -14,7 +14,8 @@ resource "aws_instance" "consul_server" {
   depends_on = ["aws_internet_gateway.k8s_igw"]
   associate_public_ip_address = true
   tags = {
-    Name = "opsschool-server-${count.index+1}"
+    Name = "consul-server-${count.index+1}"
+    consul_server = "true"
     Comment = "${var.consul_server_instance_type}"
     Excercise = "mid-proj"
 
@@ -38,7 +39,8 @@ resource "aws_instance" "consul_client" {
   associate_public_ip_address = true
 
   tags = {
-    Name = "opsschool-client-${count.index+1}"
+    Name = "consul-client-${count.index+1}"
+    consul_server = "false"
     Comment = "${var.consul_client_instance_type}"
     Excercise = "mid-proj"
     Group = "consul"

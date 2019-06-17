@@ -1,8 +1,11 @@
 #!/usr/bin/python
 import mysql.connector
+import datetime
+
+
 from mysql.connector import Error
 try:
-    connection = mysql.connector.connect(host='3.83.48.180',
+    connection = mysql.connector.connect(host='54.172.149.80',
                              database='employees',
                              user='irena',
                              password='irena')
@@ -16,6 +19,15 @@ try:
 except Error as e :
     print ("Error while connecting to MySQL", e)
 finally:
+    mytext = "irena"
+    mytime = datetime.datetime.now()
+    request_id= 10
+    sql_insert_query = """insert into app_requests (request_id,text,request_time) VALUES(%s, %s, %s)"""
+    insert_tuple = (request_id,mytext,mytime)
+    result = cursor.execute(sql_insert_query, insert_tuple)
+    connection.commit()
+    print("Record inserted successfully into python_users table")
+
     #closing database connection.
     if(connection.is_connected()):
         cursor.close()
