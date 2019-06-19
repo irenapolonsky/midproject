@@ -67,7 +67,7 @@
        path: /etc/consul.d
        state: directory
        group: consul
-       user: consul
+       owner: consul
 
    - name: consul log files directory
      become: true
@@ -75,7 +75,7 @@
        path:  /var/log/consul
        state: directory
        group: consul
-       user: consul
+       owner: consul
 
    - name: consul data directory
      become: true
@@ -83,7 +83,7 @@
        path:  /opt/consul
        state: directory
        group: consul
-       user: consul
+       owner: consul
 
    - name: consul runtime directory
      become: true
@@ -91,7 +91,7 @@
        path:  /run/consul
        state: directory
        group: consul
-       user: consul
+       owner: consul
 
    - name: configure service consul
      become: true
