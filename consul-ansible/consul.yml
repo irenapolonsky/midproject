@@ -25,6 +25,11 @@
        state: present
      become: true
 
+   - name: Create file 10-consul
+     file:
+       path: /etc/dnsmasq.d/10-consul
+       state: touch
+
    - name: Configuring dnsmasq
      lineinfile:
         path: /etc/dnsmasq.d/10-consul
