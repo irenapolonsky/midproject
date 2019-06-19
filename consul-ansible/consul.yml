@@ -51,7 +51,12 @@
        creates: /usr/local/bin/consul
        mode: 0555
 
-   - name: create user consul group consul
+   - name: create group consul
+     group:
+       name: consul
+       state: present
+
+   - name: create user consul in group consul
      user:
        name: consul
        group: consul

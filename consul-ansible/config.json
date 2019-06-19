@@ -1,5 +1,5 @@
 {
-  "advertise_addr": "{{ consul_server_ip }}",
+  "advertise_addr": "{{ local-ipv4 }}",
   "data_dir": "/opt/consul",
   "datacenter": "irena",
   "encrypt": "uDBV4e+LbFW3019YKPxIrg==",

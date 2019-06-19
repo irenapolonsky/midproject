@@ -167,11 +167,11 @@ variable "k8s_masters" {
 }
 variable "k8s_minions" {
   description = "The number of k8 minion instances"
-  default = 3
+  default = 2
 }
 variable "consul_servers" {
   description = "The number of consul servers."
-  default = 3
+  default = 1
 }
 variable "consul_clients" {
   description = "The number of consul client instances"
