@@ -34,7 +34,7 @@ sed -i "s/local-ipv4/$PRIVATE_IP/g" "vars.yml"
 touch /home/ubuntu/terraform_consul_success
 
 ###########################################################
-#sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
 ##################################################
 
 
