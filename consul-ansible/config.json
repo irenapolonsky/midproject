@@ -1,7 +1,7 @@
 {
   "advertise_addr": "{{ consul_server_ip }}",
   "data_dir": "/opt/consul",
-  "datacenter": "opsschool",
+  "datacenter": "irena",
   "encrypt": "uDBV4e+LbFW3019YKPxIrg==",
   "disable_remote_exec": true,
   "disable_update_check": true,
@@ -9,5 +9,6 @@
   "retry_join": ["provider=aws tag_key=consul_server tag_value=true"],
   "node_name": "ansible-consule-client-${count.index+1}",
   "enable_script_checks": true,
-  "server": false
+  "server": false,
+  "log_file": "/var/log/consul"
 }

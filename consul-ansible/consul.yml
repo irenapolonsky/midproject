@@ -51,31 +51,60 @@
        creates: /usr/local/bin/consul
        mode: 0555
 
-   - name: prepare configuration for service consul
+   - name: create user consul group consul
+     user:
+       name: consul
+       group: consul
+
+   - name: create consul config directory
+     become: true
+     file:
+       path: /etc/consul.d
+       state: directory
+       group: consul
+       user: consul
+
+   - name: consul log files directory
+     become: true
+     file:
+       path:  /var/log/consul
+       state: directory
+       group: consul
+       user: consul
+
+   - name: consul data directory
+     become: true
+     file:
+       path:  /opt/consul
+       state: directory
+       group: consul
+       user: consul
+
+   - name: consul runtime directory
+     become: true
+     file:
+       path:  /run/consul
+       state: directory
+       group: consul
+       user: consul
+
+   - name: configure service consul
      become: true
      copy:
        src: consul.service
        dest: /etc/systemd/system/consul.service
 
-   - name: Ensure consul config directory exists
+   - name: configure consul agent
      become: true
-     file:
-       path: "{{ consul_config_dir }}"
-       state: directory
-
-   - name: Deploy consul config
-     become: true
-     template:
-       src: init.json.j2
-       dest: "{{consul_config_dir}}/init.json"
-
-   - name: Ensure consul's running
-     become: true
-     service: name=consul state=started
+     copy:
+       src: config.json
+       dest: /etc/consul.d/config.json
 
    - name: restart service consul
      systemd:
-        state: restarted
+        name: consul
+        state: started
         daemon_reload: yes
         enabled: yes
-        name: consul
+
+
