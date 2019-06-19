@@ -1,0 +1,12 @@
+{
+  "name": "k8s",
+  "id":"k8s",
+  "port": 31616,
+  "checks": [
+    {
+      "name": "Check my connection",
+      "interval": "30s",
+      "TCP": "localhost:31616"
+    }
+  ]
+}

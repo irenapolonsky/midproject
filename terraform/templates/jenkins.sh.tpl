@@ -19,12 +19,11 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
 cd /home/ubuntu/midproject/
 #git checkout ${git_branch}
 chown -R ubuntu:ubuntu /home/ubuntu/midproject
-cd /home/ubuntu/midproject/
 
 ################################ ansible #####################################
-cd /home/ubuntu/midproject/k8s
+cd /home/ubuntu/midproject/k8s-ansible
 #sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts jenkins-master.yml -vvv
 ################################################
 
 
-touch /home/ubuntu/jenkins_success
+touch /home/ubuntu/terraform_jenkins_success

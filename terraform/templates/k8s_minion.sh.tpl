@@ -29,11 +29,9 @@ cd /home/ubuntu/midproject/k8s-ansible
 
 sed -i "s/masterIP/${k8s_master_ip}/g" "vars.yml" ### - does not work if terminated instances exist
 
-
-
 ################################ ansible #####################################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts install-docker.yml
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-common.yml -vvv
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-minion.yml -vvv
 
-touch /home/ubuntu/terraform_minion_success
+touch /home/ubuntu/terraform_kminion_success

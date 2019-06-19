@@ -10,9 +10,11 @@ data "template_file" "k8s_master_template" {
 
 data "template_file" "k8s_minion_template" {
   template = "${file("${path.module}/templates/k8s_minion.sh.tpl")}"
+  depends_on = ["aws_internet_gateway.k8s_igw","aws_instance.k8s_master"]
   vars = {
-      k8s_master_ip = "${aws_instance.k8s_master.public_ip}"
+      k8s_master_ip = "${aws_instance.k8s_master.private_ip}"
       git_branch =  "${var.git_branch}"
+
   }
 }
 
@@ -59,6 +61,43 @@ data "template_file" "consul_client" {
      "enable_script_checks": true,
      "server": false
     EOF
+  }
+}
+
+data "template_file" "ansible_consul_client" {
+  count    = "${var.consul_clients}"
+  template = "${file("${path.module}/templates/ansible_consul.sh.tpl")}"
+
+  vars {
+    git_branch =  "${var.git_branch}"
+    consul_version = "${var.consul_version}"
+    config = <<EOF
+     "node_name": "ansible-consul-client-${count.index+1}",
+     "enable_script_checks": true,
+     "server": false
+    EOF
+  }
+}
+
+data "template_file" "consul_mysql" {
+  count    = "${var.mysql_servers}"
+  template = "${file("${path.module}/templates/mysql.sh.tpl")}"
+
+  vars {
+    git_branch =  "${var.git_branch}"
+    consul_version = "${var.consul_version}"
+    config = <<EOF
+     "node_name": "consul-mysql-${count.index+1}",
+     "enable_script_checks": true,
+     "server": false
+    EOF
+  }
+}
+data "template_file" "monitoring" {
+  count    = "${var.monitoring_servers}"
+  template = "${file("${path.module}/templates/monitoring.sh.tpl")}"
+  vars = {
+    git_branch =  "${var.git_branch}"
   }
 }
 # Get Ubuntu Canonical AMI

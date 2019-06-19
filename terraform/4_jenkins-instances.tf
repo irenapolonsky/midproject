@@ -55,7 +55,7 @@ user_data = "${element(data.template_file.jenkins_template.*.rendered, count.ind
 
     tags {
       Owner           = "${var.owner}"
-      Name            = "Jenkins-slave${count.index+1}"
+      Name            = "Jenkins-slave-${count.index+1}"
       Comment = "${var.jenkins_slave_instance_type}"
       Excercise = "mid-proj"
       Group = "jenkins"

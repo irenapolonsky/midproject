@@ -1,25 +1,21 @@
-resource "aws_instance" "mysql_servers" {
-  count = "${var.mysql_servers}"
-  ami           = "${lookup(var.mysql-ami, var.region)}"
-  instance_type = "${var.mysql_instance_type}"
+resource "aws_instance" "monitoring_servers" {
+  count = "${var.monitoring_servers}"
+  ami           = "${data.aws_ami.ubuntu16_4.id}"
+  instance_type = "${var.monitoring_instance_type}"
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
   key_name      = "${var.keypair_name}"
   associate_public_ip_address = true
-  vpc_security_group_ids = ["${aws_security_group.mysql_sg.id}"]
+  vpc_security_group_ids = ["${aws_security_group.monitoring_sg.id}"]
   iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
 
-  user_data = "${element(data.template_file.mysql.*.rendered, count.index)}"
+  user_data = "${element(data.template_file.monitoring.*.rendered, count.index)}"
 
     tags {
       Owner           = "${var.owner}"
-      Name            = "mysql${count.index+1}"
-      Comment = "${var.mysql_instance_type}"
+      Name            = "monitoring-${count.index+1}"
+      Comment = "${var.monitoring_instance_type}"
       Excercise = "mid-proj"
-      Group = "mysql"
+      Group = "monitoring"
     }
-
-  tags = {
-    Name = "opsschool-mysql-${count.index+1}"
-  }
 
 }

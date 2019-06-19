@@ -89,10 +89,20 @@ variable "consul_client_instance_type" {
   description = "instance for Consul and k8s minions"
   default = "t2.micro"
 }
+
+variable "mysql_instance_type" {
+  description = "instance for Consul and k8s minions"
+  default = "t2.micro"
+}
+
+variable "monitoring_instance_type" {
+  description = "instance for Consul and k8s minions"
+  default = "t2.micro"
+}
 #----------------------------------------Instance AMI-----------------------------
 variable "jenkins_server_ami" {
     description = "AMI for jenkins Master with docker slave"
-    default = "ami-04aa07606c6502924" ### ami with kubernetes plugin
+    default = "ami-04aa07606c6502924" ### my ami with kubernetes plugin
 }
 variable "jenkins_slave_ami" {
   description = "default is not used. latest canonical is selected"
@@ -104,6 +114,21 @@ variable "consul_server_ami" {
   default = {
     "us-east-1" = "ami-0565af6e282977273"
     "us-east-2" = "ami-0653e888ec96eab9b"
+  }
+}
+
+variable "mysql-ami" {
+  description = "default is not used. latest canonical is selected"
+  default = {
+#    "us-east-1" = "ami-04bd9486c7cc16415"
+    "us-east-1" = "ami-0efce9ba58ce2de43"
+  }
+}
+
+variable "monitoring-ami" {
+  description = "default is not used. latest canonical is selected"
+  default = {
+    "us-east-1" = "ami-04bd9486c7cc16415"
   }
 }
 #---------------------------------Key Pair name------------------------------------
@@ -129,6 +154,10 @@ variable jenkins_servers {
   default = "1"
 }
 
+variable mysql_servers {
+  default = "1"
+}
+
 variable jenkins_slaves {
   default = "1"
 }
@@ -138,7 +167,7 @@ variable "k8s_masters" {
 }
 variable "k8s_minions" {
   description = "The number of k8 minion instances"
-  default = 1
+  default = 3
 }
 variable "consul_servers" {
   description = "The number of consul servers."
@@ -149,6 +178,9 @@ variable "consul_clients" {
   default = 1
 }
 
+variable monitoring_servers {
+  default = "1"
+}
 ##################################################################################
 # Provisioning VARIABLES
 ##################################################################################

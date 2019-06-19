@@ -1,0 +1,5 @@
+# Register
+nano ~/mysql-consul-registration.json
+curl -i -X PUT http://localhost:8500/v1/agent/service/register -d @mysql-consul-registration.json
+# DeRegister
+curl -X PUT http://localhost:8500/v1/agent/service/deregister/mysql

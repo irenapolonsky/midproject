@@ -1,0 +1,76 @@
+---
+- name: Install consul agent
+  hosts: all
+  become: true
+
+  tasks:
+   - name: General | Load varibles
+     include_vars:
+       file: vars.yml
+
+   - name: Update the repository
+     apt:
+       update_cache: yes
+     become: true
+
+   - name: Install dnsmasq
+     apt:
+       name: dnsmasq
+       state: present
+     become: true
+
+   - name: Install unzip
+     apt:
+       name: unzip
+       state: present
+     become: true
+
+   - name: Configuring dnsmasq
+     lineinfile:
+        path: /etc/dnsmasq.d/10-consul
+        line: 'server=/consul/127.0.0.1#8600'
+        insertbefore: BOF
+
+   - name: restart service dnsmasq
+     systemd:
+        state: restarted
+        daemon_reload: yes
+        name: dnsmasq
+
+   - name: Install Consul
+     become: true
+     unarchive:
+       src: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
+       remote_src: yes
+       dest: /usr/local/bin
+       creates: /usr/local/bin/consul
+       mode: 0555
+
+   - name: prepare configuration for service consul
+     become: true
+     copy:
+       src: consul.service
+       dest: /etc/systemd/system/consul.service
+
+   - name: Ensure consul config directory exists
+     become: true
+     file:
+       path: "{{ consul_config_dir }}"
+       state: directory
+
+   - name: Deploy consul config
+     become: true
+     template:
+       src: init.json.j2
+       dest: "{{consul_config_dir}}/init.json"
+
+   - name: Ensure consul's running
+     become: true
+     service: name=consul state=started
+
+   - name: restart service consul
+     systemd:
+        state: restarted
+          daemon_reload: yes
+          enabled: yes
+          name: consul

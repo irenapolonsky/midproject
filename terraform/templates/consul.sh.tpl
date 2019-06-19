@@ -26,24 +26,28 @@ sudo chmod +x consul
 sudo mv consul /usr/local/bin/consul
 
 # Setup consul.sh.tpl
+echo "setting up consul.sh.tpl..."
 sudo mkdir -p /opt/consul
 sudo mkdir -p /etc/consul.d
 sudo mkdir -p /run/consul
+sudo mkdir -p /var/log/consul
 sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 {
   "advertise_addr": "$PRIVATE_IP",
   "data_dir": "/opt/consul",
-  "datacenter": "irena.polonsky",
+  "datacenter": "irena",
   "encrypt": "uDBV4e+LbFW3019YKPxIrg==",
   "disable_remote_exec": true,
   "disable_update_check": true,
   "leave_on_terminate": true,
+  "log_file": "/var/log/consul",
   "retry_join": ["provider=aws tag_key=consul_server tag_value=true"],
   ${config}
 }
 EOF
 
 # Create user & grant ownership of folders
+echo "Create user & grant ownership of folders"
 sudo useradd consul
 sudo chown -R consul:consul /opt/consul /etc/consul.d /run/consul
 
@@ -54,7 +58,7 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
 ################################################
 
-# Configure consul service
+echo "Configuring consul service"
 sudo tee /etc/systemd/system/consul.service > /dev/null <<"EOF"
 [Unit]
 Description=Consul service discovery agent
@@ -77,10 +81,11 @@ TimeoutStopSec=5
 WantedBy=multi-user.target
 EOF
 
+echo "consul service configured"
 sudo systemctl daemon-reload
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
 
 
-touch /home/ubuntu/consul_success
+touch /home/ubuntu/terraform_consul_success
 

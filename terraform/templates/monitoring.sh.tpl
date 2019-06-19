@@ -21,9 +21,9 @@ cd /home/ubuntu/midproject/
 chown -R ubuntu:ubuntu /home/ubuntu/midproject
 
 ################################ ansible #####################################
-cd /home/ubuntu/midproject/k8s-ansible
+#cd /home/ubuntu/midproject/k8s-ansible
 #sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts jenkins-master.yml -vvv
 ################################################
 
 
-touch /home/ubuntu/jenkins_success
+touch /home/ubuntu/terraform_monitoring_success
