@@ -29,8 +29,9 @@ sudo mv consul /usr/local/bin/consul
 echo "setting up consul.sh.tpl..."
 sudo mkdir -p /opt/consul
 sudo mkdir -p /etc/consul.d
-sudo mkdir -p /run/consul
 sudo mkdir -p /var/log/consul
+
+
 sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 {
   "advertise_addr": "$PRIVATE_IP",
@@ -49,7 +50,7 @@ EOF
 # Create user & grant ownership of folders
 echo "Create user & grant ownership of folders"
 sudo useradd consul
-sudo chown -R consul:consul /opt/consul /etc/consul.d /run/consul
+sudo chown -R consul:consul /opt/consul /etc/consul.d
 
 ################################################
 echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config
@@ -68,11 +69,11 @@ After=network.target
 [Service]
 User=consul
 Group=consul
-PIDFile=/run/consul/consul.pid
+PIDFile=/opt/consul/consul.pid
 Restart=on-failure
 Environment=GOMAXPROCS=2
-ExecStartPre=[ -f "/run/consul/consul.pid" ] && /usr/bin/rm -f /run/consul/consul.pid
-ExecStart=/usr/local/bin/consul agent -pid-file=/run/consul/consul.pid -config-dir=/etc/consul.d
+ExecStartPre=[ -f "/opt/consul/consul.pid" ] && /usr/bin/rm -f /opt/consul/consul.pid
+ExecStart=/usr/local/bin/consul agent -pid-file=/opt/consul/consul.pid -config-dir=/etc/consul.d
 ExecReload=/bin/kill -s HUP $MAINPID
 KillSignal=SIGINT
 TimeoutStopSec=5

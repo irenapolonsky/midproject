@@ -40,7 +40,7 @@ data "template_file" "consul_server" {
     config = <<EOF
      "node_name": "consul-server-${count.index+1}",
      "server": true,
-     "bootstrap_expect": 3,
+     "bootstrap_expect": ${var.consul_servers},
      "ui": true,
      "client_addr": "0.0.0.0"
     EOF

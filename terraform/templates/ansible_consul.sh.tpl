@@ -27,14 +27,11 @@ cd /home/ubuntu/midproject/consul-ansible
 
 ###############Retrieve private ip to update k8s_master_ip in vars.yml
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-sed -i "s/local-ipv4/$PRIVATE_IP/g" "vars.yml"
 sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
-
-touch /home/ubuntu/terraform_consul_success
 
 ###########################################################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
 ##################################################
 
 
-touch /home/ubuntu/terraform_ansible_success
+touch /home/ubuntu/terraform_consul_ansible_success

@@ -85,13 +85,6 @@
        group: consul
        owner: consul
 
-   - name: consul runtime directory
-     become: true
-     file:
-       path:  /run/consul
-       state: directory
-       group: consul
-       owner: consul
 
    - name: configure service consul
      become: true

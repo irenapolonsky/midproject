@@ -217,6 +217,15 @@ resource "aws_security_group" "monitoring_sg" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Alertmanager"
   }
+
+      ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "node exporter"
+  }
+
   egress {
     from_port       = 0
     to_port         = 0
