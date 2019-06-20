@@ -151,7 +151,7 @@ resource "aws_security_group" "mysql_sg" {
     to_port     = 3306
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow accessing MYSQL/Aurora from the worls"
+    description = "Allow accessing MYSQL from the worls"
   }
   egress {
     from_port       = 0

@@ -25,5 +25,6 @@ chown -R ubuntu:ubuntu /home/ubuntu/midproject
 #sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts jenkins-master.yml -vvv
 ################################################
 
+###############Install Prometheus server
 
 touch /home/ubuntu/terraform_monitoring_success

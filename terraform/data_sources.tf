@@ -71,11 +71,7 @@ data "template_file" "ansible_consul_client" {
   vars {
     git_branch =  "${var.git_branch}"
     consul_version = "${var.consul_version}"
-    config = <<EOF
-     "node_name": "ansible-consul-client-${count.index+1}",
-     "enable_script_checks": true,
-     "server": false
-    EOF
+    consul_node_name = "ansible-consul-client-${count.index+1}"
   }
 }
 
@@ -86,11 +82,7 @@ data "template_file" "consul_mysql" {
   vars {
     git_branch =  "${var.git_branch}"
     consul_version = "${var.consul_version}"
-    config = <<EOF
-     "node_name": "consul-mysql-${count.index+1}",
-     "enable_script_checks": true,
-     "server": false
-    EOF
+    consul_node_name = "ansible-consul-client-${count.index+1}"
   }
 }
 data "template_file" "monitoring" {

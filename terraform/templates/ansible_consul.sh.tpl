@@ -5,8 +5,6 @@ set -e
 apt-add-repository ppa":"ansible"/"ansible -y
 apt-get update
 apt-get install ansible -y
-apt-get install awscli -y
-apt-get install jq -y
 
 #########################################
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
@@ -28,6 +26,7 @@ cd /home/ubuntu/midproject/consul-ansible
 ###############Retrieve private ip to update k8s_master_ip in vars.yml
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
+sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
 
 ###########################################################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
