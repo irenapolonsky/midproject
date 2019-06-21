@@ -1,0 +1,10 @@
+---
+- name: remove k8s registration on consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: remove k8s
+     consul:
+       service_name: k8s
+       state: absent

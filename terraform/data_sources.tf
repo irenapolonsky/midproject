@@ -5,6 +5,8 @@ data "template_file" "k8s_master_template" {
   template = "${file("${path.module}/templates/k8s_master.sh.tpl")}"
   vars = {
     git_branch =  "${var.git_branch}"
+    consul_version = "${var.consul_version}"
+    consul_node_name = "consul-k8s-${count.index+1}"
   }
 }
 
@@ -25,6 +27,8 @@ data "template_file" "jenkins_template" {
   template = "${file("${path.module}/templates/jenkins.sh.tpl")}"
   vars = {
     git_branch =  "${var.git_branch}"
+    consul_version = "${var.consul_version}"
+    consul_node_name = "consul-jenkins-${count.index+1}"
   }
 }
 ##################################################################################
@@ -82,7 +86,7 @@ data "template_file" "consul_mysql" {
   vars {
     git_branch =  "${var.git_branch}"
     consul_version = "${var.consul_version}"
-    consul_node_name = "ansible-consul-client-${count.index+1}"
+    consul_node_name = "consul-mysql-${count.index+1}"
   }
 }
 data "template_file" "monitoring" {

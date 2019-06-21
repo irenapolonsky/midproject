@@ -32,5 +32,7 @@ sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
 ##################################################
 
+############  register mysql with consul #################
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts mysql-registration.yml -vvv
 
 touch /home/ubuntu/terraform_consul_ansible_success

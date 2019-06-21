@@ -1,0 +1,12 @@
+---
+- name: register mysql service with consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: register mysql service with curl check
+     consul:
+       service_name: mysql
+       service_port: 3306
+       script: curl http://localhost:3306
+       interval: 10s
