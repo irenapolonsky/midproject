@@ -5,7 +5,7 @@ resource "aws_instance" "monitoring_servers" {
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
   key_name      = "${var.keypair_name}"
   associate_public_ip_address = true
-  vpc_security_group_ids = ["${aws_security_group.monitoring_sg.id}"]
+  vpc_security_group_ids = ["${aws_security_group.monitoring_sg.id}","${aws_security_group.consul_sg.id}"]
   iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
 
   user_data = "${element(data.template_file.monitoring.*.rendered, count.index)}"

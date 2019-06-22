@@ -8,8 +8,8 @@ resource "aws_instance" "k8s_master" {
   instance_type = "${var.k8s_master_instance_type}"
   subnet_id     = "${aws_subnet.k8s_Subnet_Public.id}"
   depends_on = ["aws_internet_gateway.k8s_igw"]
-
-  vpc_security_group_ids = ["${aws_security_group.k8s_sg.id}"]
+  iam_instance_profile   = "${aws_iam_instance_profile.ec2_profile.name}"
+  vpc_security_group_ids = ["${aws_security_group.k8s_sg.id}","${aws_security_group.consul_sg.id}"]
 
   key_name      = "${var.keypair_name}"
   associate_public_ip_address = true

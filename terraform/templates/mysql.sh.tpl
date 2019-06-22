@@ -5,6 +5,8 @@ set -e
 apt-add-repository ppa":"ansible"/"ansible -y
 apt-get update
 apt-get install ansible -y
+apt install python-pip -y
+pip install python-consul
 
 #########################################
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config

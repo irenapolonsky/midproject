@@ -1,5 +1,5 @@
 ##################################################################################
-# Security Groups - for k8s
+# Security Groups - for k8s, jenkins, consul, mysql, prometheus
 ##################################################################################
 
 resource "aws_security_group" "k8s_sg" {
@@ -209,21 +209,44 @@ resource "aws_security_group" "monitoring_sg" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Alertmanager"
   }
+    ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "node exporter"
+  }
+
+    ingress {
+    from_port   = 9101
+    to_port     = 9101
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "HAProxy exporter"
+  }
+
 
     ingress {
     from_port   = 9104
     to_port     = 9104
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Alertmanager"
+    description = "MySQLd exporter"
   }
 
-      ingress {
-    from_port   = 9100
-    to_port     = 9100
+    ingress {
+    from_port   = 9110
+    to_port     = 9110
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "node exporter"
+    description = "Blackbox exporter"
+  }
+    ingress {
+    from_port   = 9118
+    to_port     = 9118
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Jenkins exporter"
   }
 
   egress {

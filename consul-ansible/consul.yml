@@ -98,7 +98,7 @@
        src: config.json
        dest: /etc/consul.d/config.json
 
-   - name: restart service consul
+   - name: start/restart service consul
      systemd:
         name: consul
         state: started
