@@ -5,7 +5,8 @@ import datetime
 
 from mysql.connector import Error
 try:
-    connection = mysql.connector.connect(host='mysql.service.irena.consul',
+#    connection = mysql.connector.connect(host='mysql.service.irena.consul',
+    connection = mysql.connector.connect(host='3.82.214.180',
                              database='employees',
                              user='irena',
                              password='irena')

@@ -28,6 +28,13 @@ resource "aws_instance" "jenkins_server" {
     destination = ".ssh/jenkins_key_pair.pem"
     }
 
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 700 .ssh/jenkins_key_pair.pem",
+      "cat .ssh/jenkins_key_pair.pem >> .ssh/id_rsa",
+      "chmod 700 .ssh/id_rsa",
+          ]
+  }
 
     tags {
       Owner           = "${var.owner}"

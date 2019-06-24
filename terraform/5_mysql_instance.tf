@@ -12,7 +12,7 @@ resource "aws_instance" "mysql_servers" {
 
     tags {
       Owner           = "${var.owner}"
-      Name            = "consul-mysql-${count.index+1}"
+      Name            = "mysql-${count.index+1}"
       Comment = "${var.mysql_instance_type}"
       Excercise = "mid-proj"
       Group = "mysql"
