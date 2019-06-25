@@ -31,8 +31,8 @@ PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
 sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
 ###########################################################
-sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
-##################################################
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-installation.yml -vvv
+###########################################################
 
 ############  register mysql with consul #################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts mysql-registration.yml -vvv

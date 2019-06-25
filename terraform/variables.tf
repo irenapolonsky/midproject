@@ -102,7 +102,7 @@ variable "monitoring_instance_type" {
 #----------------------------------------Instance AMI-----------------------------
 variable "jenkins_server_ami" {
     description = "AMI for jenkins Master with docker slave"
-    default = "ami-04aa07606c6502924" ### my ami with kubernetes plugin
+    default = "ami-008462671391c0469" ### my ami with kubernetes plugin
 }
 variable "jenkins_slave_ami" {
   description = "default is not used. latest canonical is selected"

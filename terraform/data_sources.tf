@@ -29,6 +29,7 @@ data "template_file" "jenkins_template" {
     git_branch =  "${var.git_branch}"
     consul_version = "${var.consul_version}"
     consul_node_name = "jenkins-${count.index+1}"
+    k8s_master_ip = "${aws_instance.k8s_master.private_ip}"
   }
 }
 ##################################################################################

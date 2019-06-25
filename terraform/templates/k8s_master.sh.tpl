@@ -44,7 +44,7 @@ sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
 sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
 
 ################################################### install consule client and configure it ##############
-sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-installation.yml -vvv
 #########################################################################################################
 
 ###################################################  register k8s with consul #################

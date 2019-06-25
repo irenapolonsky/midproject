@@ -25,8 +25,14 @@ cd /home/ubuntu/midproject/consul-ansible
 
 ############### modify consul config for jenkins params ###################
 #PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-#sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
-#sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
+sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
+sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
+
+####################################install consule client and configure it#######################
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-installation.yml -vvv
+###########################################################
+############  register prometheus with consul #################
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts prometheus-registration.yml -vvv
 
 ################################################### install consule client and configure it ##############
 #sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts prometheus.yml -vvv
