@@ -1,0 +1,107 @@
+---
+- name: Install prometheus and node exporter
+  hosts: all
+  become: true
+
+  tasks:
+   - name: create group prometheus
+     group:
+       name: prometheus
+       state: present
+
+   - name: create user prometheus in group prometheus
+     user:
+       name: prometheus
+       group: prometheus
+
+   - name: create group node_exporter
+     group:
+       name: node_exporter
+       state: present
+
+   - name: create user node_exporter in group node_exporter
+     user:
+       name: node_exporter
+       group: node_exporter
+
+   - name: create prometheus config directory
+     become: true
+     file:
+       path: /etc/prometheus
+       state: directory
+       group: prometheus
+       owner: prometheus
+
+   - name: create prometheus data directory
+     become: true
+     file:
+       path: /var/lib/prometheus
+       state: directory
+       group: prometheus
+       owner: prometheus
+
+   - name: Install prometheus
+     become: true
+     unarchive:
+       src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
+       remote_src: yes
+       dest: /tmp/
+       creates: /tmp/prometheus
+
+   - name: Install node-exporter
+     become: true
+     unarchive:
+       src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
+       remote_src: yes
+       dest: /tmp/
+       creates: /tmp/prometheus
+
+   - name: Copy  prometheus binary to /etc/prometheus
+     become: true
+     copy:
+       src: /tmp/prometheus/prometheus
+       dest: /etc/prometheus
+       owner: prometheus
+       mode: 0555
+
+   - name: Copy  node_exporter binary to /etc/prometheus
+     become: true
+     copy:
+       src: /tmp/prometheus/node_exporter
+       dest: /etc/prometheus
+       owner: node_exporter
+
+   - name: Copy  consoles to /etc/prometheus
+     become: true
+     copy:
+       src: /tmp/prometheus/consoles
+       dest: /etc/prometheus
+       owner: prometheus
+
+   - name: Copy  console_libraries  to /etc/prometheus
+     become: true
+     copy:
+       src: /tmp/prometheus/console_libraries
+       dest: /etc/prometheus
+       owner: prometheus
+
+   - name: configure service prometheus
+     become: true
+     copy:
+       src: prometheus.service
+       dest: /etc/systemd/system/
+
+   - name: configure prometheus with targets
+     become: true
+     copy:
+       src: prometheus.yml
+       dest: /etc/prometheus/
+
+   - name: start/restart service prometheus
+     systemd:
+        name: prometheus
+        state: started
+        daemon_reload: yes
+        enabled: yes
+
+

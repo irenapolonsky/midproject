@@ -7,6 +7,6 @@
    - name: register prometheus service with curl check
      consul:
        service_name: prometheus
-       service_port: xxx
-       script: curl http://localhost:xxx
+       service_port: 9090
+       script: curl http://localhost:9090
        interval: 10s
