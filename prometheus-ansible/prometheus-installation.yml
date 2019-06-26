@@ -4,6 +4,11 @@
   become: true
 
   tasks:
+   - name: General | Load varibles
+     include_vars:
+        file: vars.yml
+
+
    - name: create group prometheus
      group:
        name: prometheus
@@ -43,7 +48,7 @@
    - name: Install prometheus
      become: true
      unarchive:
-       src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
+       src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
        remote_src: yes
        dest: /tmp/
        creates: /tmp/prometheus
@@ -51,51 +56,60 @@
    - name: Install node-exporter
      become: true
      unarchive:
-       src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
+       src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
        remote_src: yes
        dest: /tmp/
        creates: /tmp/prometheus
 
-   - name: Copy  prometheus binary to /etc/prometheus
+   - name: Copy  prometheus binary to /usr/local/bin/
      become: true
      copy:
-       src: /tmp/prometheus/prometheus
-       dest: /etc/prometheus
+       src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+       dest: "/usr/local/bin/"
        owner: prometheus
        mode: 0555
 
-   - name: Copy  node_exporter binary to /etc/prometheus
+   - name: Copy  prometheus binary to /usr/local/bin/
      become: true
      copy:
-       src: /tmp/prometheus/node_exporter
-       dest: /etc/prometheus
+       src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+       dest: "/usr/local/bin/"
+       owner: prometheus
+       mode: 0555
+
+   - name: Copy  node_exporter binary to /usr/local/bin/
+     become: true
+     copy:
+       src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+       dest: "/usr/local/bin/"
        owner: node_exporter
+       mode: 0555
 
    - name: Copy  consoles to /etc/prometheus
      become: true
      copy:
-       src: /tmp/prometheus/consoles
+       src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
        dest: /etc/prometheus
        owner: prometheus
 
    - name: Copy  console_libraries  to /etc/prometheus
      become: true
      copy:
-       src: /tmp/prometheus/console_libraries
+       src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
        dest: /etc/prometheus
        owner: prometheus
-
-   - name: configure service prometheus
-     become: true
-     copy:
-       src: prometheus.service
-       dest: /etc/systemd/system/
 
    - name: configure prometheus with targets
      become: true
      copy:
        src: prometheus.yml
        dest: /etc/prometheus/
+
+   - name: configure service prometheus
+     become: true
+     copy:
+       src: prometheus.service
+       dest: /etc/systemd/system/
 
    - name: start/restart service prometheus
      systemd:
@@ -104,4 +118,16 @@
         daemon_reload: yes
         enabled: yes
 
+   - name: configure service node_exporter
+     become: true
+     copy:
+       src: node_exporter.service
+       dest: /etc/systemd/system/
+
+   - name: start/restart service node_exporter
+     systemd:
+        name: node_exporter
+        state: started
+        daemon_reload: yes
+        enabled: yes
 
