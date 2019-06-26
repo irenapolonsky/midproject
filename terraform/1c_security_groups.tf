@@ -154,6 +154,7 @@ resource "aws_security_group" "mysql_sg" {
     description = "Allow ssh from the world"
   }
 
+
   ingress {
     from_port   = 3306
     to_port     = 3306
@@ -303,6 +304,14 @@ resource "aws_security_group" "consul_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow ssh from the world"
+  }
+
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "prometheus node exporter on every consul client"
   }
 
   ingress {
