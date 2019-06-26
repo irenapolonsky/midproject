@@ -85,6 +85,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
 
+####################################### install prometheus node exporter ################################
+cd /home/ubuntu/midproject/prometheus-ansible
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
+#########################################################################################################
 
 touch /home/ubuntu/terraform_consul_success
 

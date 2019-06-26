@@ -19,16 +19,6 @@
        name: prometheus
        group: prometheus
 
-   - name: create group node_exporter
-     group:
-       name: node_exporter
-       state: present
-
-   - name: create user node_exporter in group node_exporter
-     user:
-       name: node_exporter
-       group: node_exporter
-
    - name: create prometheus config directory
      become: true
      file:
@@ -53,14 +43,6 @@
        dest: /tmp/
        creates: /tmp/prometheus
 
-   - name: Install node-exporter
-     become: true
-     unarchive:
-       src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
-       remote_src: yes
-       dest: /tmp/
-       creates: /tmp/prometheus
-
    - name: Copy  prometheus binary to /usr/local/bin/
      become: true
      copy:
@@ -69,7 +51,7 @@
        owner: prometheus
        mode: 0555
 
-   - name: Copy  prometheus binary to /usr/local/bin/
+   - name: Copy  promtool binary to /usr/local/bin/
      become: true
      copy:
        src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
@@ -77,13 +59,6 @@
        owner: prometheus
        mode: 0555
 
-   - name: Copy  node_exporter binary to /usr/local/bin/
-     become: true
-     copy:
-       src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
-       dest: "/usr/local/bin/"
-       owner: node_exporter
-       mode: 0555
 
    - name: Copy  consoles to /etc/prometheus
      become: true
@@ -117,17 +92,3 @@
         state: started
         daemon_reload: yes
         enabled: yes
-
-   - name: configure service node_exporter
-     become: true
-     copy:
-       src: node_exporter.service
-       dest: /etc/systemd/system/
-
-   - name: start/restart service node_exporter
-     systemd:
-        name: node_exporter
-        state: started
-        daemon_reload: yes
-        enabled: yes
-

@@ -243,6 +243,22 @@ resource "aws_security_group" "monitoring_sg" {
   }
 
     ingress {
+    from_port   = 9107
+    to_port     = 9107
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "consul exporter"
+  }
+
+    ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "grafana"
+  }
+
+    ingress {
     from_port   = 9110
     to_port     = 9110
     protocol    = "tcp"

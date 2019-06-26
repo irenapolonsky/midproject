@@ -37,4 +37,8 @@ sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-insta
 ############  register mysql with consul #################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts mysql-registration.yml -vvv
 
+#################### install node-exporter for prometheus ###################
+cd /home/ubuntu/midproject/prometheus-ansible
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
+
 touch /home/ubuntu/terraform_consul_ansible_success

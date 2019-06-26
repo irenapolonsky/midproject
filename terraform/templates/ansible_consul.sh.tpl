@@ -29,8 +29,12 @@ sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
 sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
 
 ###########################################################
-sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul.yml -vvv
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-installation.yml -vvv
 ##################################################
 
+####################################### install prometheus node exporter ################################
+cd /home/ubuntu/midproject/prometheus-ansible
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
+#########################################################################################################
 
 touch /home/ubuntu/terraform_consul_ansible_success

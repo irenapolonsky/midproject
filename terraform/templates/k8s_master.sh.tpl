@@ -50,6 +50,9 @@ sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-insta
 ###################################################  register k8s with consul #################
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts k8s-registration.yml -vvv
 
-
+####################################### install prometheus node exporter ################################
+cd /home/ubuntu/midproject/prometheus-ansible
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
+#########################################################################################################
 
 touch /home/ubuntu/terraform_kmaster_success
