@@ -4,9 +4,7 @@
   become: true
 
   tasks:
-   - name: register jenkins service with curl check
+   - name: register jenkins service
      consul:
        service_name: jenkins
        service_port: 8080
-       script: curl http://localhost:8080
-       interval: 10s
