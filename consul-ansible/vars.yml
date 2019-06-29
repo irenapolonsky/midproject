@@ -1,3 +1,4 @@
 ---
 consul_version: "1.4.0"
+k8s_private_dns: "local_dns"
 

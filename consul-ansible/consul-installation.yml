@@ -36,6 +36,12 @@
         line: 'server=/consul/127.0.0.1#8600'
         insertbefore: BOF
 
+   - name: Configuring dnsmasq
+     lineinfile:
+        path: /etc/dnsmasq.d/10-consul
+        line: 'server={ k8s_private_dns }'
+        insertafter: EOF
+
    - name: restart service dnsmasq
      systemd:
         state: restarted
