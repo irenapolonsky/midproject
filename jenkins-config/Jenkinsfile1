@@ -1,0 +1,51 @@
+node('docker-slave-general') {
+  def DockerImage = "polonskyirena/webserver:v1.0"
+  def DockerImageLatest = "polonskyirena/midproj:latest"
+
+  stage('Pre') { // Run pre-build steps
+    cleanWs()
+    sh "docker rm -f webserver || true"
+  }
+
+  stage('Git') { // Get code from GitLab repository
+    git branch: 'final_project',
+      url: 'https://github.com/irenapolonsky/midproject.git'
+  }
+
+  stage('Build') { // Run the docker build
+    sh "docker build -f app-docker/Dockerfile --tag ${DockerImageLatest} ."
+  }
+
+  stage('Run') { // Run the built image
+    sh "docker run -d --network=host --name webserver --rm -p 5000:5000 ${DockerImageLatest}; sleep 5"
+  }
+
+  stage('Test') { // Run tests on container
+    def dockerOutput = sh (
+        script: 'curl http://172.17.0.1:5000/goaway',
+        returnStdout: true
+        ).trim()
+    sh "docker rm -f webserver"
+
+    if ( dockerOutput == 'GO AWAY!' ) {
+        currentBuild.result = 'SUCCESS'
+    } else {
+        currentBuild.result = 'FAILURE'
+        sh "echo Webserver returned ${dockerOutput}"
+    }
+    return
+  }
+  stage('Push') { // Push the image to repository
+   withDockerRegistry([ credentialsId: "docker_hub_credentials", url: "" ]) {
+         sh "docker push ${DockerImageLatest}"
+       }
+   sh "docker rmi ${DockerImageLatest}"
+   return
+ }
+  stage('Deploy')
+   kubernetesDeploy(
+    configs: 'jenkins-config/deploy.yml,jenkins-config/svc.yml', enableConfigSubstitution: true,
+    dockerCredentials: [[credentialsId: 'docker_hub_credentials']],
+    kubeconfigId: 'kubeconfig',
+    )
+}
