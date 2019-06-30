@@ -6,4 +6,4 @@ metadata:
   namespace: kube-system
 data:
   stubDomains: |
-    {"consul": ["local_ip"]
+    {"consul": ["local_ip"]}
