@@ -30,13 +30,13 @@
        path: /etc/dnsmasq.d/10-consul
        state: touch
 
-   - name: Configuring dnsmasq
+   - name: Configuring 1-st line in 10-consul
      lineinfile:
         path: /etc/dnsmasq.d/10-consul
         line: 'server=/consul/127.0.0.1#8600'
         insertbefore: BOF
 
-   - name: Configuring dnsmasq
+   - name: Configuring 2-nd line in 10-consul
      lineinfile:
         path: /etc/dnsmasq.d/10-consul
         line: 'server=/{{ private_dns }}/{{private_ip}}'

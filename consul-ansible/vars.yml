@@ -1,5 +1,5 @@
 ---
 consul_version: "1.4.0"
-private_dns: "local_dns"
-private_ip: "local_ip"
+private_dns: local_dns
+private_ip: local_ip
 
