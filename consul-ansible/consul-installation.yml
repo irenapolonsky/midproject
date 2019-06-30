@@ -39,7 +39,7 @@
    - name: Configuring dnsmasq
      lineinfile:
         path: /etc/dnsmasq.d/10-consul
-        line: 'server={ k8s_private_dns }'
+        line: 'server=/{{ private_dns }}/{{private_ip}}'
         insertafter: EOF
 
    - name: restart service dnsmasq
