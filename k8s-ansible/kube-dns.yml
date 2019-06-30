@@ -33,7 +33,7 @@ spec:
     port: 53
     protocol: TCP
 ---
-apiVersion: v1
+apiVersion: apps/v1
 kind: ServiceAccount
 metadata:
   name: kube-dns
@@ -42,7 +42,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 ---
-apiVersion: v1
+apiVersion: apps/v1
 kind: ConfigMap
 metadata:
   name: kube-dns
@@ -50,7 +50,7 @@ metadata:
   labels:
     addonmanager.kubernetes.io/mode: EnsureExists
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-dns
