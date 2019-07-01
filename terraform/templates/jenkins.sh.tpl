@@ -16,11 +16,15 @@ echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/
 echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
 ################################################
 
+
+
 cd /home/ubuntu/
 
 ##################### k8s_master_ip to update jenkins kubeconfig credentials ###################
-sed -i "s/k8s.service.irena.consul/${k8s_master_ip}/g" "credentials.xml"
+#sed -i "s/k8s.service.irena.consul/${k8s_master_ip}/g" "credentials.xml"
 ################################################################################################
+
+rm -r -f midproject
 
 git clone https://github.com/irenapolonsky/midproject.git
 cd /home/ubuntu/midproject/
@@ -32,8 +36,11 @@ cd /home/ubuntu/midproject/consul-ansible
 
 ############### modify consul config for jenkins params ###################
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+PRIVATE_DNS=$(curl http://169.254.169.254/latest/meta-data/local-hostname)
 sed -i "s/local-ipv4/$PRIVATE_IP/g" "config.json"
 sed -i "s/consul-node-name/${consul_node_name}/g" "config.json"
+sed -i "s/local_ip/$PRIVATE_IP/g" "vars.yml"
+sed -i "s/local_dns/$PRIVATE_DNS/g" "vars.yml"
 
 ################################################### install consule client and configure it ##############
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts consul-installation.yml -vvv
@@ -45,5 +52,7 @@ sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts jenkins-regi
 cd /home/ubuntu/midproject/prometheus-ansible
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
 #########################################################################################################
+
+docker restart jenkins
 
 touch /home/ubuntu/terraform_jenkins_success

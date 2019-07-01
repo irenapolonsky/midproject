@@ -85,6 +85,18 @@ sudo systemctl daemon-reload
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
 
+############ install ansible ############
+apt-add-repository ppa":"ansible"/"ansible -y
+apt-get update
+apt-get install ansible -y
+
+cd /home/ubuntu/
+
+git clone https://github.com/irenapolonsky/midproject.git
+cd /home/ubuntu/midproject/
+git checkout ${git_branch}
+chown -R ubuntu:ubuntu /home/ubuntu/midproject
+
 ####################################### install prometheus node exporter ################################
 cd /home/ubuntu/midproject/prometheus-ansible
 sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv

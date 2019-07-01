@@ -16,7 +16,6 @@ data "template_file" "k8s_minion_template" {
   vars = {
       k8s_master_ip = "${aws_instance.k8s_master.private_ip}"
       git_branch =  "${var.git_branch}"
-
   }
 }
 
@@ -41,6 +40,7 @@ data "template_file" "consul_server" {
   template = "${file("${path.module}/templates/consul.sh.tpl")}"
 
   vars {
+    git_branch =  "${var.git_branch}"
     consul_version = "${var.consul_version}"
     config = <<EOF
      "node_name": "consul-server-${count.index+1}",
@@ -61,6 +61,7 @@ data "template_file" "consul_client" {
 
   vars {
     consul_version = "${var.consul_version}"
+    git_branch =  "${var.git_branch}"
     config = <<EOF
      "node_name": "consul-client-${count.index+1}",
      "enable_script_checks": true,

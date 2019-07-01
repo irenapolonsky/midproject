@@ -119,6 +119,16 @@ resource "aws_security_group" "jenkins_sg" {
     protocol = "TCP"
     cidr_blocks = [
       "0.0.0.0/0"]
+    description = "Allow access to alternative container for jenkins app"
+  }
+
+      ingress {
+    from_port = 5000
+    to_port = 5000
+    protocol = "TCP"
+    cidr_blocks = [
+      "0.0.0.0/0"]
+    description = "Allow access to app for test "
   }
 
   ######################
@@ -126,6 +136,7 @@ resource "aws_security_group" "jenkins_sg" {
     from_port = 0
     to_port = 0
     protocol = "-1"
+    description = "Allow all inside security group"
     cidr_blocks = [
       "0.0.0.0/0"]
   }
@@ -351,6 +362,21 @@ resource "aws_security_group" "consul_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Wan Serf: The Serf WAN port TCP and UDP)"
+  }
+
+    ingress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "DNS(TCP)"
+  }
+    ingress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "DNS(UDP)"
   }
 
     ingress {
