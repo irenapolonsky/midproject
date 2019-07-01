@@ -1,0 +1,114 @@
+---
+- name: Install consul agent
+  hosts: all
+  become: true
+
+  tasks:
+   - name: General | Load varibles
+     include_vars:
+       file: vars.yml
+
+   - name: Update the repository
+     apt:
+       update_cache: yes
+     become: true
+
+   - name: Install dnsmasq
+     apt:
+       name: dnsmasq
+       state: present
+     become: true
+
+   - name: Install unzip
+     apt:
+       name: unzip
+       state: present
+     become: true
+
+   - name: Create file 10-consul
+     file:
+       path: /etc/dnsmasq.d/10-consul
+       state: touch
+
+   - name: Configuring 1-st line in 10-consul
+     lineinfile:
+        path: /etc/dnsmasq.d/10-consul
+        line: 'server=/consul/127.0.0.1#8600'
+        insertbefore: BOF
+
+   - name: Configuring 2-nd line in 10-consul
+     lineinfile:
+        path: /etc/dnsmasq.d/10-consul
+        line: 'server=/{{ private_dns }}/{{private_ip}}'
+        insertafter: EOF
+
+   - name: restart service dnsmasq
+     systemd:
+        state: restarted
+        daemon_reload: yes
+        name: dnsmasq
+
+   - name: Install Consul
+     become: true
+     unarchive:
+       src: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
+       remote_src: yes
+       dest: /usr/local/bin
+       creates: /usr/local/bin/consul
+       mode: 0555
+
+   - name: create group consul
+     group:
+       name: consul
+       state: present
+
+   - name: create user consul in group consul
+     user:
+       name: consul
+       group: consul
+
+   - name: create consul config directory
+     become: true
+     file:
+       path: /etc/consul.d
+       state: directory
+       group: consul
+       owner: consul
+
+   - name: consul log files directory
+     become: true
+     file:
+       path:  /var/log/consul
+       state: directory
+       group: consul
+       owner: consul
+
+   - name: consul data directory
+     become: true
+     file:
+       path:  /opt/consul
+       state: directory
+       group: consul
+       owner: consul
+
+
+   - name: configure service consul
+     become: true
+     copy:
+       src: consul.service
+       dest: /etc/systemd/system/consul.service
+
+   - name: configure consul agent
+     become: true
+     copy:
+       src: config.json
+       dest: /etc/consul.d/config.json
+
+   - name: start/restart service consul
+     systemd:
+        name: consul
+        state: started
+        daemon_reload: yes
+        enabled: yes
+
+
