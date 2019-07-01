@@ -6,7 +6,7 @@ metadata:
   labels:
     app: hello-world
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 5000
     nodePort: 31616
