@@ -121,10 +121,9 @@ To present the project:
     
     jmeter - on desktop
     
-        run mysql requests to see what happens in app_requests table    
 11. Git Bash for k8s_ip:
     cd midproject/k8s-ansible/
     
-    kubectl apply -f kube-dns.yml
+    `kubectl apply -f kube-dns.yml`
     
-    kubectl get pods -n kube-system -l k8s-app=kube-dns
+    `kubectl get pods -n kube-system -l k8s-app=kube-dns`
