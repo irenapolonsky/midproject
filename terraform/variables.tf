@@ -171,11 +171,11 @@ variable "k8s_minions" {
 }
 variable "consul_servers" {
   description = "The number of consul servers."
-  default = 1
+  default = 3
 }
 variable "consul_clients" {
   description = "The number of consul client instances"
-  default = 1
+  default = 0
 }
 
 variable monitoring_servers {

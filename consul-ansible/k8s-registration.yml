@@ -9,4 +9,4 @@
        service_name: k8s
        service_port: 6443
        script: curl http://localhost:6443
-       interval: 10s
+       interval: 3s
