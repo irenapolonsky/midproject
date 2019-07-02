@@ -96,3 +96,28 @@
 4. Grafana installed on instance Monitoring (directly in user-data)
 5. data source is provided in /etc/grafana/provisioning/datasources/
 6. dashboard is provided in /etc/grafana/provisioning/dashboards
+
+
+**Commands**
+
+To present the project:
+1. mkdir opsschool_final_project
+2. cd opsschool_final_project
+3. git clone https://github.com/irenapolonsky/midproject.git
+4. cd midproject/
+5. git checkout final_project
+6. cd terraform/
+7. terraform init
+8. terraform plan
+9. terraform apply --auto-approve
+10. Open:  
+    consul_ip:8500
+    jenkins_ip:8080
+    monitoring_ip:9090 and 3000
+    k8s_ip:31616
+    jmeter - on desktop
+        run mysql requests to see what happens in app_requests table    
+11. Git Bash for k8s_ip:
+    cd midproject/k8s-ansible/
+    kubectl apply -f kube-dns.yml
+    kubectl get pods -n kube-system -l k8s-app=kube-dns
