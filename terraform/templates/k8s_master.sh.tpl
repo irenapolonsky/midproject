@@ -40,7 +40,7 @@ PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 echo "$PRIVATE_IP"
 sed -i "s/local_ip/$PRIVATE_IP/g" "kube-dns.yml"
 
-kubectl apply -f kube-dns.yml
+#kubectl apply -f kube-dns.yml
 
 ####################################################consul section###################
 cd /home/ubuntu/midproject/consul-ansible
