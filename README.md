@@ -47,7 +47,7 @@
         Prometheus
         Grafana
 4. Service config adjustment (for Jenkins service discovery)
-    ExecStart=/usr/local/bin/consul agent -client 0.0.0.0 -pid-file=/opt/consul/consul.pid -config-dir=/etc/consul.d
+    `ExecStart=/usr/local/bin/consul agent -client 0.0.0.0 -pid-file=/opt/consul/consul.pid -config-dir=/etc/consul.d`
 5. Added local dns (ip-10-0-1-145.ec2.internal) to dnsmasq consul config  
     Is pointed by kube-dns stubdomain
 6.  Installed Prometheus node_exporter 
@@ -59,9 +59,9 @@
 3. Created aws ami and used to build an instance
      To use consul service discovery  
         In Kubernetes Continuous Deploy plugin (k8s-master ip):
-	        docker run -d --name jenkins --network=host --rm -v /var/run/docker.sock:/var/run/docker.sock -p 	8080:8080 jenkins-master:lts 
+	        `docker run -d --name jenkins --network=host --rm -v /var/run/docker.sock:/var/run/docker.sock -p 	8080:8080 jenkins-master:lts` 
      In cicd pipe stage – connect to mysql
-            docker run -d --network=host --name webserver --rm -p 5000:5000 ${DockerImageLatest}
+            `docker run -d --network=host --name webserver --rm -p 5000:5000 ${DockerImageLatest}`
 4. Installed Consul client
 5. Installed Prometheus node_exporter
 
