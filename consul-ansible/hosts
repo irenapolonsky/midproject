@@ -1,0 +1,9 @@
+# This is the customized ansible 'hosts' file.
+
+[servers]
+localhost
+
+[clients]
+localhost
+
+

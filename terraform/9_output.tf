@@ -16,8 +16,15 @@ output "jenkins_server_public_ip" {
 output "consul servers" {
   value = ["${aws_instance.consul_server.*.public_ip}"]
 }
-##################################################################################
-//output "consul clients" {
-//  value = ["${aws_instance.consul_client.*.public_ip}"]
-//}
-##################################################################################
+
+output "consul clients" {
+  value = ["${aws_instance.consul_client.*.public_ip}"]
+}
+
+output "mysql_servers" {
+  value = ["${aws_instance.mysql_servers.*.public_ip}"]
+}
+
+output "monitoring_servers" {
+  value = ["${aws_instance.monitoring_servers.*.public_ip}"]
+}

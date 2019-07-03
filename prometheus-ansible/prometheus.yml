@@ -1,0 +1,49 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'prometheus_node_exporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9100']
+
+  - job_name: 'mysqld_exporter'
+    static_configs:
+      - targets:
+          - mysql.service.irena.consul:9104
+
+  - job_name: 'mysql_node_exporter'
+    static_configs:
+      - targets:
+          - mysql.service.irena.consul:9100
+
+  - job_name: 'jenkins_exporter'
+    static_configs:
+      - targets:
+          - jenkins.service.irena.consul:9118
+
+  - job_name: 'jenkins_node_exporter'
+    static_configs:
+      - targets:
+          - jenkins.service.irena.consul:9100
+
+  - job_name: 'consul_exporter'
+    static_configs:
+      - targets:
+          - consul.service.irena.consul:9107
+
+  - job_name: 'consul_node_exporter'
+    static_configs:
+      - targets:
+          - consul.service.irena.consul:9100
+
+
+  - job_name: 'k8s_master_node_exporter'
+    static_configs:
+      - targets:
+          - k8s.service.irena.consul:9100

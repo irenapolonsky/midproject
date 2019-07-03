@@ -1,0 +1,9 @@
+.idea
+__pycache__
+jenkins-config/Dockerfile_slave
+terraform/.terraform
+terraform/locals
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+terraform/.terraform.tfstate.lock.info

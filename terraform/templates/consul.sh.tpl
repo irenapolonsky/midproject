@@ -25,30 +25,39 @@ unzip consul.zip >/dev/null
 sudo chmod +x consul
 sudo mv consul /usr/local/bin/consul
 
-# Setup Consulconsul.sh.tpl
+# Setup consul.sh.tpl
+echo "setting up consul.sh.tpl..."
 sudo mkdir -p /opt/consul
 sudo mkdir -p /etc/consul.d
-sudo mkdir -p /run/consul
+sudo mkdir -p /var/log/consul
 sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 {
   "advertise_addr": "$PRIVATE_IP",
   "data_dir": "/opt/consul",
-  "datacenter": "opsschool",
+  "datacenter": "irena",
   "encrypt": "uDBV4e+LbFW3019YKPxIrg==",
   "disable_remote_exec": true,
   "disable_update_check": true,
   "leave_on_terminate": true,
+  "log_file": "/var/log/consul",
   "retry_join": ["provider=aws tag_key=consul_server tag_value=true"],
   ${config}
 }
 EOF
 
 # Create user & grant ownership of folders
+echo "Create user & grant ownership of folders"
 sudo useradd consul
-sudo chown -R consul:consul /opt/consul /etc/consul.d /run/consul
+sudo chown -R consul:consul /opt/consul /etc/consul.d
 
+################################################
+echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config
+echo "ClientAliveCountMax 720" >> /etc/ssh/sshd_config
+echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /home/ubuntu/.bashrc
+echo "alias ls='ls -l -a --color -h --group-directories-first'" >> /root/.bashrc
+################################################
 
-# Configure consul service
+echo "Configuring consul service"
 sudo tee /etc/systemd/system/consul.service > /dev/null <<"EOF"
 [Unit]
 Description=Consul service discovery agent
@@ -58,11 +67,11 @@ After=network.target
 [Service]
 User=consul
 Group=consul
-PIDFile=/run/consul/consul.pid
+PIDFile=/opt/consul/consul.pid
 Restart=on-failure
 Environment=GOMAXPROCS=2
-ExecStartPre=[ -f "/run/consul/consul.pid" ] && /usr/bin/rm -f /run/consul/consul.pid
-ExecStart=/usr/local/bin/consul agent -pid-file=/run/consul/consul.pid -config-dir=/etc/consul.d
+ExecStartPre=[ -f "/opt/consul/consul.pid" ] && /usr/bin/rm -f /opt/consul/consul.pid
+ExecStart=/usr/local/bin/consul agent -pid-file=/opt/consul/consul.pid -config-dir=/etc/consul.d
 ExecReload=/bin/kill -s HUP $MAINPID
 KillSignal=SIGINT
 TimeoutStopSec=5
@@ -71,9 +80,27 @@ TimeoutStopSec=5
 WantedBy=multi-user.target
 EOF
 
+echo "consul service configured"
 sudo systemctl daemon-reload
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
 
+############ install ansible ############
+apt-add-repository ppa":"ansible"/"ansible -y
+apt-get update
+apt-get install ansible -y
 
-touch /home/ubuntu/consul_success
+cd /home/ubuntu/
+
+git clone https://github.com/irenapolonsky/midproject.git
+cd /home/ubuntu/midproject/
+git checkout ${git_branch}
+chown -R ubuntu:ubuntu /home/ubuntu/midproject
+
+####################################### install prometheus node exporter ################################
+cd /home/ubuntu/midproject/prometheus-ansible
+sudo -u ubuntu sudo ansible-playbook --connection=local -b -i hosts node_exporter-installation.yml -vvv
+#########################################################################################################
+
+touch /home/ubuntu/terraform_consul_success
+

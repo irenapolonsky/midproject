@@ -1,0 +1,10 @@
+---
+- name: remove mysql registration on consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: remove mysql
+     consul:
+       service_name: mysql
+       state: absent

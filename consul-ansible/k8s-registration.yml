@@ -1,0 +1,12 @@
+---
+- name: register k8s service with consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: register k8s service with curl check
+     consul:
+       service_name: k8s
+       service_port: 6443
+       script: curl http://localhost:6443
+       interval: 3s

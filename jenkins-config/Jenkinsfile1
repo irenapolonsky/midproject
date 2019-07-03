@@ -1,0 +1,17 @@
+node('docker-slave-general') {
+  def DockerImage = "polonskyirena/webserver:v1.0"
+  def DockerImageLatest = "polonskyirena/midproj:latest"
+
+  stage('Git') { // Get code from GitLab repository
+    git branch: 'final_project',
+      url: 'https://github.com/irenapolonsky/midproject.git'
+  }
+
+  stage('Deploy')
+   kubernetesDeploy(
+    configs: 'k8s-ansible/kube-dns.yml', enableConfigSubstitution: true,
+    dockerCredentials: [[credentialsId: 'docker_hub_credentials']],
+    kubeconfigId: 'kubeconfig',
+    )
+
+}

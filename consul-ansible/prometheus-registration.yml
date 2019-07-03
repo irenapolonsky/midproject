@@ -1,0 +1,12 @@
+---
+- name: register prometheus service with consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: register prometheus service with curl check
+     consul:
+       service_name: prometheus
+       service_port: 9090
+       script: curl http://localhost:9090
+       interval: 3s

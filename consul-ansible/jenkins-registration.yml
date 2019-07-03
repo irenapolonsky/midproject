@@ -1,0 +1,10 @@
+---
+- name: register jenkins service with consul
+  hosts: all
+  become: true
+
+  tasks:
+   - name: register jenkins service
+     consul:
+       service_name: jenkins
+       service_port: 8080
