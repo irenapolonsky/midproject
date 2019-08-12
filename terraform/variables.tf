@@ -16,7 +16,7 @@ variable "pem_path" {
 
 variable "git_branch" {
   type = "string"
-  default = "final_project"
+  default = "master"
 }
 
 variable "prefix" {
