@@ -105,7 +105,6 @@ To present the project:
 2. cd opsschool_final_project
 3. git clone https://github.com/irenapolonsky/midproject.git
 4. cd midproject/
-5. git checkout final_project
 6. cd terraform/
 7. terraform init
 8. terraform plan
